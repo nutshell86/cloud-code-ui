@@ -1,0 +1,19 @@
+# Normalize all text files to LF in the repository; check out native.
+* text=auto eol=lf
+
+# Source stays LF everywhere
+*.js    text eol=lf
+*.json  text eol=lf
+*.css   text eol=lf
+*.html  text eol=lf
+*.md    text eol=lf
+
+# Windows launchers must keep CRLF or they misbehave
+*.cmd   text eol=crlf
+*.bat   text eol=crlf
+*.ps1   text eol=crlf
+
+# Binary assets (no EOL munging)
+*.png   binary
+*.jpg   binary
+*.ico   binary

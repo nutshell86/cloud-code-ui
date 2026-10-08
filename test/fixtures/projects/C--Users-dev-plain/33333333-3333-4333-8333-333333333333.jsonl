@@ -1,0 +1,4 @@
+{"type":"queue-operation","sessionId":"33333333-3333-4333-8333-333333333333"}
+{"type":"user","cwd":"C:\\Users\\dev\\plain","timestamp":"2026-01-06T09:00:00.000Z","sessionId":"33333333-3333-4333-8333-333333333333","message":{"role":"user","content":[{"type":"text","text":"Lauf auf einem exotischen Modell"}]}}
+{"type":"assistant","cwd":"C:\\Users\\dev\\plain","timestamp":"2026-01-06T09:00:10.000Z","sessionId":"33333333-3333-4333-8333-333333333333","message":{"role":"assistant","model":"mystery-model-1","content":[{"type":"text","text":"Teil eins der Antwort."}],"usage":{"input_tokens":1000,"output_tokens":500}}}
+{"type":"assistant","cwd":"C:\\Users\\dev\\plain","timestamp":"2026-01-06T09:00:20.000Z","sessionId":"33333333-3333-4333-8333-333333333333","message":{"role":"assistant","model":"mystery-model-1","content":[{"type":"text","text":"Teil zwei der Antwort."}],"usage":{"input_tokens":1000,"output_tokens":500}}}

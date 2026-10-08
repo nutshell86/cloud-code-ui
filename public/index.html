@@ -1,0 +1,1068 @@
+<!doctype html>
+<html lang="de" data-theme="auto">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Claude Code · Control Panel</title>
+  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='6' fill='%231b1730'/%3E%3Cg stroke='white' stroke-width='1' stroke-opacity='.85'%3E%3Cline x1='12' y1='3' x2='21' y2='12'/%3E%3Cline x1='21' y1='12' x2='12' y2='21'/%3E%3Cline x1='12' y1='21' x2='3' y2='12'/%3E%3Cline x1='3' y1='12' x2='12' y2='3'/%3E%3Cline x1='12' y1='3' x2='12' y2='21'/%3E%3Cline x1='3' y1='12' x2='21' y2='12'/%3E%3C/g%3E%3Cg fill='white'%3E%3Ccircle cx='12' cy='3' r='1.7'/%3E%3Ccircle cx='21' cy='12' r='1.7'/%3E%3Ccircle cx='12' cy='21' r='1.7'/%3E%3Ccircle cx='3' cy='12' r='1.7'/%3E%3C/g%3E%3Cpath fill='%23d97757' d='M12 1.4 L13.38 8.67 L19.5 4.5 L15.33 10.62 L22.6 12 L15.33 13.38 L19.5 19.5 L13.38 15.33 L12 22.6 L10.62 15.33 L4.5 19.5 L8.67 13.38 L1.4 12 L8.67 10.62 L4.5 4.5 L10.62 8.67Z'/%3E%3C/svg%3E" />
+  <link rel="stylesheet" href="/styles.css" />
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="brand">
+        <div class="brand-mark" aria-hidden="true">
+          <svg class="bm-net" viewBox="0 0 24 24">
+            <line class="bm-edge" x1="12" y1="3" x2="21" y2="12"/><line class="bm-edge" x1="21" y1="12" x2="12" y2="21"/>
+            <line class="bm-edge" x1="12" y1="21" x2="3" y2="12"/><line class="bm-edge" x1="3" y1="12" x2="12" y2="3"/>
+            <line class="bm-edge" x1="12" y1="3" x2="12" y2="21"/><line class="bm-edge" x1="3" y1="12" x2="21" y2="12"/>
+            <circle class="bm-node" cx="12" cy="3" r="1.9"/><circle class="bm-node" cx="21" cy="12" r="1.9"/><circle class="bm-node" cx="12" cy="21" r="1.9"/><circle class="bm-node" cx="3" cy="12" r="1.9"/>
+          </svg>
+          <svg class="bm-star" viewBox="0 0 24 24"><path d="M12 1.4 L13.38 8.67 L19.5 4.5 L15.33 10.62 L22.6 12 L15.33 13.38 L19.5 19.5 L13.38 15.33 L12 22.6 L10.62 15.33 L4.5 19.5 L8.67 13.38 L1.4 12 L8.67 10.62 L4.5 4.5 L10.62 8.67Z"/></svg>
+          <span class="bm-ui">ui</span>
+        </div>
+        <div class="brand-text">
+          <strong>Claude Code</strong>
+          <span>Control Panel</span>
+        </div>
+        <!-- fold the sidebar into the icon rail on a normal window too (≤820px forces it anyway) — render.js applyNavRail;
+             title/aria/icon are written by JS (they depend on the state), so no data-i18n here -->
+        <button id="navRailBtn" class="nav-rail-btn" type="button" aria-expanded="true" aria-controls="sidebar"></button>
+      </div>
+
+      <nav class="nav">
+        <button class="nav-item active" data-view="chat" data-i18n-title="html.chat" aria-current="page"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg></span> <span data-i18n="html.chat">Chat</span><span class="nav-busy hidden" id="navChatBusy"></span></button>
+        <button class="nav-item" data-view="sessions" data-i18n-title="html.sitzungen"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg></span> <span data-i18n="html.sitzungen">Sitzungen</span></button>
+        <!-- P-1: projects — a start profile + a label; the briefcase is ICONS.project in render.js (folder/folders already mean cwd/addDirs) -->
+        <button class="nav-item" data-view="projects" data-i18n-title="html.projekte"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/></svg></span> <span data-i18n="html.projekte">Projekte</span></button>
+        <button class="nav-item" data-view="settings" data-i18n-title="html.einstellungen"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="4" y1="21" x2="4" y2="14"/><line x1="4" y1="10" x2="4" y2="3"/><line x1="12" y1="21" x2="12" y2="12"/><line x1="12" y1="8" x2="12" y2="3"/><line x1="20" y1="21" x2="20" y2="16"/><line x1="20" y1="12" x2="20" y2="3"/><line x1="1" y1="14" x2="7" y2="14"/><line x1="9" y1="8" x2="15" y2="8"/><line x1="17" y1="16" x2="23" y2="16"/></svg></span> <span data-i18n="html.einstellungen">Einstellungen</span></button>
+        <button class="nav-item" data-view="mcp" data-i18n-title="html.mcpPlugins"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></span> <span data-i18n="html.mcpPlugins">MCP &amp; Plugins</span></button>
+        <button class="nav-item" data-view="usage" data-i18n-title="html.nutzungKosten"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span> <span data-i18n="html.nutzungKosten">Nutzung &amp; Kosten</span></button>
+        <button class="nav-item" data-view="skills" data-i18n-title="html.skills"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></span> <span data-i18n="html.skills">Skills</span></button>
+        <button class="nav-item" data-view="uiskills" data-i18n-title="html.uiSkills"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="18" height="18" rx="2"/><polygon points="10 8 16 12 10 16 10 8"/></svg></span> <span data-i18n="html.uiSkills">UI-Skills</span></button>
+        <button class="nav-item" data-view="memory" data-i18n-title="html.speicher"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 20h9"/><path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4 12.5-12.5z"/></svg></span> <span data-i18n="html.speicher">Speicher</span></button>
+        <button class="nav-item" data-view="system" data-i18n-title="common.system"><span class="ni"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></span> <span data-i18n="common.system">System</span></button>
+      </nav>
+
+      <div class="sidebar-foot">
+        <button id="prPill" class="pr-pill hidden" type="button" title="Offene Pull Requests" data-i18n-title="html.offenePullRequests"></button>
+        <button id="updatePill" class="update-pill hidden" type="button"></button>
+        <!-- second pill, same mechanics, for the CLI this panel drives (claude.exe) — see refreshCliVersion() -->
+        <button id="cliUpdatePill" class="update-pill cli hidden" type="button"></button>
+        <button id="themeBtn" class="ghost-btn" title="Design wechseln" data-i18n-title="html.designWechseln"><svg class="ic" viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 3a9 9 0 0 1 0 18Z" fill="currentColor" stroke="none"/></svg><span data-i18n="html.design">Design</span></button>
+        <div class="host-badge" id="hostBadge"><span class="status-dot" id="connDot" title="Verbindung wird geprüft…" data-i18n-title="html.verbindungWirdGeprueft"><span class="d"></span></span><span id="hostText">127.0.0.1</span></div>
+      </div>
+    </aside>
+
+    <!-- Main -->
+    <main class="main">
+      <!-- CHAT VIEW -->
+      <section class="view active" id="view-chat">
+        <header class="topbar">
+          <div class="topbar-title">
+            <h1 data-i18n="html.chat">Chat</h1>
+            <span class="session-chip" id="sessionChip" data-i18n="html.keineSitzung">keine Sitzung</span>
+          </div>
+          <div class="topbar-actions">
+            <!-- mountEventBell() moves this into the header of whichever view is active -->
+            <button id="eventBell" class="pill-select event-bell" type="button" title="Letzte Ereignisse" data-i18n-title="html.letzteEreignisse" aria-label="Letzte Ereignisse" data-i18n-aria="html.letzteEreignisse" data-ic="bell"></button>
+            <div class="chat-opts-wrap">
+              <button id="chatOptsBtn" class="pill-select" title="Anzeige &amp; Antwort-Stil" data-i18n-title="html.anzeigeAntwortStil" data-ic="display" data-label="Anzeige" data-i18n-label="html.anzeige"></button>
+              <div id="chatOptsPop" class="chat-opts-pop hidden">
+                <h4 data-i18n="html.antwortStil">Antwort-Stil</h4>
+                <div id="styleSelMount" title="Wird als System-Hinweis an neue Sessions übergeben" data-i18n-title="html.wirdAlsSystemHinweis"></div>
+                <div id="stylePreview" class="co-preview"></div>
+                <div class="co-hint"><span data-i18n="html.stilWechselGiltAb">Stil-Wechsel gilt ab dem nächsten</span> <b data-i18n="html.neu">+ Neu</b> <span data-i18n="html.alsSystemHinweis">(als System-Hinweis).</span></div>
+                <div class="chat-opts-sep"></div>
+                <h4 data-i18n="html.anzeige">Anzeige</h4>
+                <label class="co-check"><input type="checkbox" id="tgThinking" checked /> <span data-i18n="html.thinkingAnzeigen">💭 Thinking anzeigen</span></label>
+                <label class="co-check"><input type="checkbox" id="tgTools" checked /> <span data-i18n="html.toolDetailsAnzeigen">⚙ Tool-Details anzeigen</span></label>
+                <label class="co-check"><input type="checkbox" id="tgFoot" checked /> <span data-i18n="html.zeitTokenZeile">∑ Zeit/Token-Zeile</span></label>
+                <label class="co-check"><input type="checkbox" id="tgRaw" /> <span data-i18n="html.rohtextStattMarkdown">‹/› Rohtext statt Markdown</span></label>
+                <div class="co-row"><span data-i18n="html.schriftgroesse">Schriftgröße</span><div id="fontSizeMount"></div></div>
+                <div class="co-hint" data-i18n="html.ganzesPanelZoom">Ganzes Panel: Strg + / Strg − / Strg 0</div>
+                <label class="co-check"><input type="checkbox" id="tgDense" /> <span data-i18n="html.kompakteDichte">▤ Kompakte Dichte</span></label>
+                <div class="chat-opts-sep"></div>
+                <!-- A turn can run for minutes; if you switched to Outlook meanwhile, nothing told you
+                     it finished or that it is waiting for an approval. Opt-in, because a notification
+                     permission prompt out of nowhere is worse than no notification. -->
+                <h4 data-i18n="html.benachrichtigungen">Benachrichtigungen</h4>
+                <label class="co-check"><input type="checkbox" id="tgNotify" /> <span data-i18n="html.beiTurnEndeUndRueckfrage">🔔 Bei Turn-Ende und Rückfrage benachrichtigen</span></label>
+                <div class="co-hint" data-i18n="html.nurWennDasFensterNichtAktiv">Nur wenn das Fenster nicht aktiv ist. Der Fenstertitel blinkt zusätzlich.</div>
+                <label class="co-check"><input type="checkbox" id="tgSuggest" /> <span data-i18n="html.antwortvorschlaegeVonDerCli">✨ Antwortvorschläge von der CLI</span></label>
+                <!-- POP-B, the mirror case: this `<b>` sat INSIDE a data-i18n element, so applyStaticI18n()
+                     threw it away on the first paint together with the wording — the dictionary value said
+                     „… gilt ab dem nächsten neuen Chat.", the markup „… nächsten + Neu.". Built like the
+                     „Stil-Wechsel" line above now: the emphasis is its own element carrying the button's
+                     own key, and the full stop is plain text because it is the same character in both
+                     languages. The guard in test/views-polish.test.js now checks BOTH directions. -->
+                <div class="co-hint"><span data-i18n="html.stattGeratenGiltAb">Statt geraten — gilt ab dem nächsten</span> <b data-i18n="html.neu">+ Neu</b>.</div>
+                <label class="co-row"><span data-i18n="html.offenePunkteSammeln">⧉ Offene Punkte sammeln</span>
+                  <select id="opCollectSel" class="co-sel">
+                    <option value="auto" data-i18n="html.sammelnAuto">automatisch (ab 2 Fragen)</option>
+                    <option value="on" data-i18n="html.sammelnImmer">immer</option>
+                    <option value="off" data-i18n="html.sammelnNie">nie</option>
+                  </select>
+                </label>
+                <!-- POP-B: the emphasis is MARKUP here, not inside the string. applyStaticI18n() assigns
+                     data-i18n values with textContent, so a `<b>` in the dictionary is printed as the five
+                     characters „<b>e" — which is exactly what this hint showed. Same split as the
+                     „gilt ab dem nächsten + Neu" line above, which already does it this way. -->
+                <div class="co-hint"><span data-i18n="html.offenePunkteSammelnHinweis">Antworten werden vorgemerkt; ein Klick schickt alle als</span> <b data-i18n="html.offenePunkteSammelnEine">eine</b> <span data-i18n="html.offenePunkteSammelnHinweis2">Nachricht — statt je Antwort einen Turn zu starten, hinter dem die nächste wartet. Bei nur einer offenen Frage geht die Antwort weiter sofort raus.</span></div>
+                <div class="chat-opts-sep"></div>
+                <h4 data-i18n="html.sicherheit">Sicherheit</h4>
+                <label class="co-check"><input type="checkbox" id="tgGuard" checked /> <span data-i18n="html.vorSensiblenDatenWarnen">🛡 Vor sensiblen Daten warnen</span></label>
+                <div class="chat-opts-sep"></div>
+                <h4 data-i18n="html.chatExportieren">Chat exportieren</h4>
+                <div class="co-export"><button id="exportMd" class="mini-btn" data-ic="download" data-label="Markdown" data-i18n-label="html.markdown"></button><button id="exportJson" class="mini-btn" data-ic="download" data-label="JSON" data-i18n-label="html.json"></button></div>
+              </div>
+            </div>
+            <div class="steps-wrap">
+              <button id="stepsBtn" class="pill-select" title="Agent-Schritte dieses Turns" data-i18n-title="html.agentSchritteDiesesTurns" aria-label="Agent-Schritte" data-i18n-aria="html.agentSchritte" data-ic="steps" data-label="Schritte" data-i18n-label="common.schritte"></button>
+              <div id="stepsPop" class="steps-pop hidden"></div>
+            </div>
+            <button id="chatSearchBtn" class="pill-select" title="Im Chat suchen (Strg+F)" data-i18n-title="html.imChatSuchenStrg" aria-label="Im Chat suchen" data-i18n-aria="html.imChatSuchen" data-ic="search"></button>
+            <button id="skillLaunchBtn" class="pill-select" title="Skill / UI-Skill in neuem Tab starten" data-i18n-title="html.skillUiSkillIn" aria-label="Skill in Tab starten" data-i18n-aria="html.skillInTabStarten" data-ic="play" data-label="Skill" data-i18n-label="html.skill"></button>
+            <button id="newChatBtn" class="primary-btn" data-ic="plus" data-label="Neu" data-i18n-label="html.neu-2"></button>
+          </div>
+        </header>
+
+        <div id="chatSearch" class="chat-search hidden">
+          <input id="chatSearchInput" type="text" placeholder="Im Chat suchen…" data-i18n-ph="html.imChatSuchen-2" spellcheck="false" />
+          <span id="chatSearchCount" class="cs-count">0/0</span>
+          <button id="chatSearchPrev" class="mini-btn" title="Zurück (Shift+Enter)" data-i18n-title="html.zurueckShiftEnter" aria-label="Zurück" data-i18n-aria="html.zurueck" data-ic="chevronUp"></button>
+          <button id="chatSearchNext" class="mini-btn" title="Weiter (Enter)" data-i18n-title="html.weiterEnter" aria-label="Weiter" data-i18n-aria="html.weiter" data-ic="chevronDown"></button>
+          <button id="chatSearchClose" class="mini-btn" title="Schließen (Esc)" data-i18n-title="html.schliessenEsc" aria-label="Schließen" data-i18n-aria="common.schliessen" data-ic="close"></button>
+        </div>
+
+        <!-- The scroller holds ONLY the tabs; "+" and the overflow picker live in a pinned rail beside
+             it, or they scroll out of reach exactly when many tabs make them necessary. -->
+        <div class="chat-tabbar">
+          <div id="chatTabs" class="chat-tabs single" role="tablist" aria-label="Chat-Tabs"></div>
+          <div class="chat-tabbar-fix" id="chatTabsFix"></div>
+        </div>
+
+        <div class="chat-body" id="chatBody">
+          <div class="chat-scroll" id="chatScroll">
+            <div class="empty-state" id="chatEmpty">
+              <div class="empty-glyph" data-ic="chat"></div>
+              <h2 data-i18n="html.unterhaltungStarten">Unterhaltung starten</h2>
+              <p><span data-i18n="html.untenTippenUnd">Unten tippen und </span><kbd>Enter</kbd><span data-i18n="html.drueckenDasSteuertDeine"> drücken. Das steuert deine echte </span><code>claude</code><span data-i18n="html.cliToolsMcpServer">-CLI — Tools, MCP-Server und Skills funktionieren alle.</span></p>
+            </div>
+          </div>
+          <!-- Right: the approvals you have GRANTED — "Immer erlauben" grants of this tab plus the
+               persisted path/pattern rules from settings.local. They used to pile up as chips in the
+               status bar above the composer, where they crowded the line and were easy to miss. -->
+          <aside class="chat-side" id="chatSide">
+            <div class="cs-resize" id="chatSideResize" role="separator" aria-orientation="vertical" tabindex="0"></div>
+            <div class="cside-head">
+              <button class="mini-btn cside-toggle" id="chatSideToggle" title="Seitenpanel einklappen" data-i18n-title="chat-side.einklappen" aria-expanded="true" aria-controls="chatSideBody"></button>
+              <span class="cside-title" data-i18n="chat-side.titel">Seitenpanel</span>
+              <span class="cside-count hidden" id="chatSideCount"></span>
+              <!-- PF-1: the plan's progress („3/7", „√7") — its own badge, so the count's order (❓ > 🤖 > grants) stays; CSS shows it only while the rail is collapsed -->
+              <span class="cside-plan-badge hidden" id="chatSidePlan"></span>
+              <!-- S3: the collapsed strip as a jump bar — one button per group (chat-side.js chatSideJumpPaint); CSS shows it only while collapsed -->
+              <div class="cside-jump" id="chatSideJump" role="group" aria-label="Gruppen der Seitenleiste" data-i18n-aria="chat-side.sprungleiste"></div>
+            </div>
+            <div class="cside-body" id="chatSideBody">
+              <div class="cside-empty" id="chatSideEmpty" data-i18n="chat-side.keineFreigaben">Nichts freigegeben. Was du mit „Immer erlauben“ freigibst, steht hier und lässt sich zurücknehmen.</div>
+              <div class="cside-slot" id="chatSideSlot"></div>
+            </div>
+          </aside>
+          <div class="sidecar hidden" id="sidecar">
+            <div class="sidecar-resize" id="sidecarResize"></div>
+            <div class="sidecar-head">
+              <span class="sc-tabs">
+                <button class="sc-tab active" id="scTabView" data-mode="view" data-i18n="html.ansicht">Ansicht</button>
+                <button class="sc-tab" id="scTabPreview" data-mode="preview" data-i18n="common.vorschau">Vorschau</button>
+              </span>
+              <span class="sc-title" id="sidecarTitle"></span>
+              <button class="mini-btn" id="sidecarCopy" title="Inhalt kopieren" data-i18n-title="html.inhaltKopieren" aria-label="Inhalt kopieren" data-i18n-aria="html.inhaltKopieren" data-ic="copy"></button>
+              <button class="mini-btn" id="sidecarClose" title="Schließen" data-i18n-title="common.schliessen" aria-label="Schließen" data-i18n-aria="common.schliessen" data-ic="close"></button>
+            </div>
+            <div class="sidecar-body" id="sidecarBody"></div>
+          </div>
+          <button id="scrollLatest" class="scroll-latest hidden" title="Zu den neuesten Nachrichten" data-i18n-title="html.zuDenNeuestenNachrichten" data-ic="chevronDown" data-label="Neueste" data-i18n-label="html.neueste"></button>
+        </div>
+
+        <div class="composer">
+          <div id="editingChip" class="editing-chip hidden"></div>
+          <div id="slashMenu" class="slash-menu hidden"></div>
+          <div id="atMenu" class="slash-menu hidden"></div>
+          <div id="attachChips" class="attach-chips"></div>
+          <!-- queued messages (typed while a turn runs) live HERE, not in the transcript, so they can't sit
+               above the answer they are waiting for; they enter the transcript when they are sent (WP-2 C2) -->
+          <div id="chatQueue" class="chat-queue hidden" aria-live="polite"></div>
+          <div id="chatStatus" class="chat-status">
+            <span class="cs-left"></span>
+            <span class="cs-right">
+              <!-- options populated live from /api/models by populateModelSelect() (chat.js); the
+                   default below is the pre-JS fallback and is rebuilt on boot + on language switch -->
+              <!-- SELECT-NAME: aria-label, not just title. Nine of the thirteen selects in this file sit
+                   inside their <label> and are named by it; these three in the chat status bar have no
+                   label at all, so their accessible name came from `title` — the weakest source in the
+                   name computation, and for #permMode below it is a three-sentence tooltip, which is what
+                   a screen reader would then announce as the control's NAME. -->
+              <select id="modelSel" class="pill-select cs-sel" title="Modell" data-i18n-title="common.modell" aria-label="Modell" data-i18n-aria="common.modell">
+                <option value="" data-i18n="html.standardmodell">◇ Standardmodell</option>
+              </select>
+              <select id="effortSel" class="pill-select cs-sel" title="Aufwandsstufe" data-i18n-title="html.aufwandsstufe" aria-label="Aufwandsstufe" data-i18n-aria="html.aufwandsstufe">
+                <!-- short on purpose: this was the widest option and therefore set the width of the
+                     whole control, which squeezed the status line next to it. "Aufwand" is on the title.
+                     The empty value means „no explicit level", which the CLI itself DISPLAYS as „auto" —
+                     so that is the word used here (and it is shorter than „Standard", which the width
+                     note above cares about). Not a new entry: this option now has a LIVE path
+                     (`effortLevel: null`) instead of restarting the session for it. -->
+                <option value="" data-i18n="html.aufwandStandard" title="Keine feste Aufwandsstufe — das Modell entscheidet. Die CLI nennt das „auto"." data-i18n-title="html.aufwandStandardTooltip">✧ auto</option>
+                <option value="low" data-i18n="html.niedrig-2">🐢 niedrig</option>
+                <option value="medium" data-i18n="html.mittel-2">🚶 mittel</option>
+                <option value="high" data-i18n="html.hoch-2">🏃 hoch</option>
+                <option value="xhigh" data-i18n="html.xhigh-2">⚡ xhigh</option>
+                <option value="max" data-i18n="html.max-2">🔥 max</option>
+              </select>
+              <select id="permMode" class="pill-select cs-sel" title="Berechtigungsmodus — bestimmt, was Claude tun darf. Standard und Änderungen übernehmen fragen pro Tool nach (Erlauben/Ablehnen)." data-i18n-title="html.berechtigungsmodusBestimmtWasClaude" aria-label="Berechtigungsmodus" data-i18n-aria="html.berechtigungsmodus">
+                <option value="plan" selected data-i18n="html.planNurLesen-2">◐ Plan · nur Lesen</option>
+                <option value="manual" data-i18n="html.manuellFragtImmer">◒ Manuell · fragt immer</option>
+                <option value="default" data-i18n="html.standardFragtNach">◑ Standard · fragt nach</option>
+                <!-- the CLI knows six modes; the panel offered four. `auto` is the middle ground
+                     between asking about everything and asking about nothing — the CLI decides per
+                     tool. `dontAsk` is its counterpart: it never asks, but still refuses what the
+                     rules forbid (unlike bypassPermissions, which refuses nothing). -->
+                <option value="auto" data-i18n="html.autoCliEntscheidet">◓ Auto · CLI entscheidet je Tool</option>
+                <option value="acceptEdits" data-i18n="html.aenderungenUebernehmen">✎ Änderungen übernehmen</option>
+                <option value="dontAsk" data-i18n="html.ohneRueckfragenRegelnGelten">◔ Ohne Rückfragen · Regeln gelten</option>
+                <option value="bypassPermissions" data-i18n="html.volleAutonomie">⚡ Volle Autonomie ⚠</option>
+              </select>
+            </span>
+          </div>
+          <div id="chatTodos" class="chat-todos hidden" aria-live="polite"></div>
+          <!-- the agent list lives in the side rail now (chat-side.js): it cost height above the
+               composer for the whole run, while the rail beside it sat idle -->
+          <div id="ctxGauge" class="ctx-gauge hidden" title="Kontextfenster: was im Kontext liegt, gegen das Fenster des aktiven Modells. Quelle und Zahlen stehen hier, sobald der erste Wert vorliegt." data-i18n-title="html.geschaetzteKontextfensterAuslastungDes"></div>
+          <div class="composer-config hidden">
+            <span class="cc-cwd" title="Arbeitsverzeichnis für neue Chats (CLAUDE.md &amp; Projektkontext) — nur für neue Chats; bei laufenden Chats ausgeblendet" data-i18n-title="html.arbeitsverzeichnisFuerNeueChats">
+              <span class="cc-ico" aria-hidden="true" data-ic="folder"></span>
+              <input id="cwdInput" type="text" spellcheck="false" placeholder="cwd für neuen Chat…" data-i18n-ph="html.cwdFuerNeuenChat" list="cwdList" aria-label="Arbeitsverzeichnis" data-i18n-aria="html.arbeitsverzeichnis" />
+              <datalist id="cwdList"></datalist>
+              <button id="cwdDefaultBtn" class="cc-mini" type="button" title="Als Standard für neue Chats speichern" data-i18n-title="html.alsStandardFuerNeue" aria-label="cwd als Standard" data-i18n-aria="html.cwdAlsStandard" data-ic="pin" data-ic-size="14"></button>
+            </span>
+          </div>
+          <!-- voice input: the text still being recognised — beside the field, never in it (chat-composer.js) -->
+          <div id="voicePreview" class="voice-preview hidden" aria-live="polite"></div>
+          <div class="composer-inner">
+            <label id="attachBtn" class="attach-btn" for="fileInput" title="Datei oder Bild anhängen (oder Drag &amp; Drop / Einfügen)" data-i18n-title="html.dateiOderBildAnhaengen" aria-label="Datei anhängen" data-i18n-aria="html.dateiAnhaengen" data-ic="plus" data-ic-size="18"></label>
+            <button id="snipBtn" class="attach-btn" type="button" title="SAP-Vorlagen &amp; Befehle (Strg+K)" data-i18n-title="html.sapVorlagenBefehleStrg" aria-label="Vorlagen und Befehle" data-i18n-aria="html.vorlagenUndBefehle" data-ic="bolt" data-ic-size="18"></button>
+            <button id="micBtn" class="attach-btn" type="button" title="Spracheingabe (diktieren)" data-i18n-title="html.spracheingabeDiktieren" aria-label="Spracheingabe" data-i18n-aria="html.spracheingabe" data-ic="mic" data-ic-size="18"></button>
+            <!-- WP-2 M11: the prompt library was only reachable via the command palette -->
+            <button id="promptLibBtn" class="attach-btn" type="button" title="Prompt-Bibliothek (gespeicherte Prompts)" data-i18n-title="html.promptBibliothekGespeicherte" aria-label="Prompt-Bibliothek" data-i18n-aria="html.promptBibliothek" data-ic="star" data-ic-size="18"></button>
+            <!-- A13: alles, was du je gefragt hast — Terminal und Panel. Neben der Bibliothek, weil das
+                 eine „gespeichert" und das andere „schon mal getippt" ist. -->
+            <button id="promptHistBtn" class="attach-btn" type="button" title="Prompt-Historie (Strg+Shift+H)" data-i18n-title="html.promptHistorieStrg" aria-label="Prompt-Historie" data-i18n-aria="html.promptHistorie" data-ic="clock" data-ic-size="18"></button>
+            <!-- autocomplete="off": no form state of the browser's own for the composer (Chromium saves and restores it
+                 only for controls that may autocomplete — read from its source, not measured). „Duplicate tab" and a
+                 session restore carry that state over, Firefox restores it on a reload: a duplicate showed the
+                 original's text, and restoreTabs took it for text typed while the boot waited. Which draft a window
+                 shows is the panel's decision (CHAT-FLOW-4 part B, chat.js tabsBoot). -->
+            <textarea id="composerInput" autocomplete="off" rows="1" placeholder="Claude Code eine Nachricht schreiben…  (/ Befehle · @ Datei · ⚡ Vorlagen · Strg+K)" data-i18n-ph="html.claudeCodeEineNachricht" spellcheck="false" aria-label="Nachricht an Claude" data-i18n-aria="html.nachrichtAnClaude"></textarea>
+            <div class="composer-actions">
+              <button id="enhanceBtn" class="ghost-btn" type="button" title="Prompt verbessern (ein Modell-Aufruf)" data-i18n-title="html.promptVerbessernEinModell" aria-label="Prompt verbessern" data-i18n-aria="html.promptVerbessern" data-ic="sparkle"></button>
+              <button id="interruptBtn" class="ghost-btn hidden" title="Unterbrechen" data-i18n-title="html.unterbrechen" data-ic="stop" data-label="Stopp" data-i18n-label="html.stopp"></button>
+              <button id="sendBtn" class="send-btn" title="Senden (Enter)" data-i18n-title="html.sendenEnter" aria-label="Senden" data-i18n-aria="html.senden" data-ic="send" data-ic-size="18"></button>
+            </div>
+          </div>
+          <input type="file" id="fileInput" multiple class="vhidden" />
+        </div>
+      </section>
+
+      <!-- SESSIONS VIEW -->
+      <section class="view" id="view-sessions">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.sitzungen">Sitzungen</h1><span class="session-chip" id="sessCount">—</span></div>
+          <div class="topbar-actions">
+            <input id="sessSearch" class="search" type="search" placeholder="🔍 Sessions durchsuchen… (Titel, Text, Projekt, ID)" data-i18n-ph="html.sessionsDurchsuchenTitelText" />
+            <button id="sessFulltext" class="ghost-btn" data-i18n="sessions.volltext" data-i18n-title="sessions.volltextTitel" title="In allen Sitzungen nach Nachrichten-Inhalt suchen (Strg+Shift+F)">🔎 Volltext</button>
+            <button id="sessSelectBtn" class="ghost-btn" title="Mehrere auswählen und löschen" data-i18n-title="html.mehrereAuswaehlenUndLoeschen" data-ic="checkSquare" data-label="Auswählen" data-i18n-label="html.auswaehlen"></button>
+            <button id="sessReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div id="sessSelBar" class="sel-bar hidden">
+          <label class="co-check"><input type="checkbox" id="selAll" /> <span data-i18n="common.alle">Alle</span></label>
+          <span id="selCount" class="sel-count" data-i18n="html.n0Ausgewaehlt">0 ausgewählt</span>
+          <span class="sel-spacer"></span>
+          <button id="selDelete" class="danger-btn" disabled data-ic="trash" data-label="Auswahl löschen" data-i18n-label="html.auswahlLoeschen"></button>
+          <button id="selCancel" class="ghost-btn" data-i18n="html.fertig">Fertig</button>
+        </div>
+        <div class="sessions-layout">
+          <div class="sessions-list" id="sessionsList"></div>
+          <div class="transcript" id="transcript">
+            <div class="empty-state small"><div class="empty-glyph" data-ic="inbox"></div><p data-i18n="html.sitzungAuswaehlenUmDas">Sitzung auswählen, um das Transkript anzuzeigen.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- PROJECTS VIEW (P-1, public/js/projects.js): tiles → one page per project; the editor is a dialog -->
+      <section class="view" id="view-projects">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.projekte">Projekte</h1><span class="session-chip" id="projCount">—</span></div>
+          <div class="topbar-actions">
+            <input id="projSearch" class="search" type="search" placeholder="🔍 Projekte durchsuchen…" data-i18n-ph="projects.suchePh" />
+            <button id="projNew" class="ghost-btn" data-ic="plus" data-label="Neues Projekt" data-i18n-label="projects.neu"></button>
+            <button id="projFromTab" class="ghost-btn" data-ic="copy" data-label="Aus aktuellem Tab" data-i18n-label="projects.ausTab" title="Startwerte des aktiven Chat-Tabs als neues Projekt übernehmen" data-i18n-title="projects.ausTabTooltip"></button>
+            <button id="projReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div class="proj-body" id="projBody"></div>
+      </section>
+
+      <!-- SETTINGS VIEW -->
+      <section class="view" id="view-settings">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.einstellungen">Einstellungen</h1></div>
+          <div class="topbar-actions"><button id="settReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button></div>
+        </header>
+        <div class="settings-scroll">
+          <!-- SETT-ORDER: the jump bar's order IS the DOM order of the cards below it, and the first card
+               is what this view opens on. „Info" (Über · Verbindung · Tastenkürzel · Changelog) is
+               reference material you look up, not what you came here to change — it used to own the top of
+               the view, so every visit to Settings started by scrolling past it. It is now the last card
+               and the last chip; one click still gets you there.
+               ICON-DUP: „Leitplanken" draws `shield`, not a second `lock` — nine chips, nine shapes. -->
+          <nav class="sett-nav" id="settNav">
+            <a href="#sec-quick"><span data-ic="settings" data-ic-size="15"></span><span data-i18n="html.schnell">Schnell</span></a>
+            <a href="#sec-more"><span data-ic="plus" data-ic-size="15"></span><span data-i18n="html.weitere">Weitere</span></a>
+            <a href="#sec-guard"><span data-ic="shield" data-ic-size="15"></span><span data-i18n="html.leitplanken">Leitplanken</span></a>
+            <a href="#sec-subagents"><span data-ic="bot" data-ic-size="15"></span><span data-i18n="html.agentenUndWorkflows">Agenten &amp; Workflows</span></a>
+            <a href="#sec-perms"><span data-ic="lock" data-ic-size="15"></span><span data-i18n="html.berechtigungen">Berechtigungen</span></a>
+            <a href="#sec-env"><span data-ic="leaf" data-ic-size="15"></span><span data-i18n="html.env">Env</span></a>
+            <a href="#sec-hooks"><span data-ic="hook" data-ic-size="15"></span><span data-i18n="html.hooks">Hooks</span></a>
+            <a href="#sec-json"><span data-ic="braces" data-ic-size="15"></span><span data-i18n="html.json">JSON</span></a>
+            <a href="#sec-info"><span data-ic="info" data-ic-size="15"></span><span data-i18n="html.info">Info</span></a>
+          </nav>
+          <div class="card quick-card" id="sec-quick">
+            <h3><span data-i18n="html.schnelleinstellungen">Schnelleinstellungen</span> <span class="muted">· settings.json</span></h3>
+            <div class="quick-grid">
+              <label><span data-i18n="html.sprache">Sprache</span> <span class="muted">· this UI only</span>
+                <div id="langFlags" class="lang-flags">
+                  <button class="lang-flag" data-lang="de" type="button" title="Deutsch (€)"><span class="lf-flag">🇩🇪</span> Deutsch</button>
+                  <button class="lang-flag" data-lang="en" type="button" title="English ($)"><span class="lf-flag">🇬🇧</span> English</button>
+                </div>
+              </label>
+              <label><span data-i18n="html.design">Design</span>
+                <select id="qsTheme"><option value="auto" data-i18n="html.automatisch">automatisch</option><option value="dark" data-i18n="html.dunkel">dunkel</option><option value="light" data-i18n="html.hell">hell</option></select>
+              </label>
+              <!-- No zoom of our own on purpose: the browser's zoom already scales every height (100vh), breakpoint and
+                   menu position correctly and Edge remembers the level for this panel's origin; a CSS zoom would have
+                   to re-derive all three. What was missing was only that anybody knows. -->
+              <p class="hint" data-i18n="html.textgroessePanelHinweis">Textgröße des ganzen Panels: Strg + / Strg − / Strg 0 (Browser-Zoom — Edge merkt sich die Stufe für dieses Panel). Nur die Chat-Schrift: Anzeige-Menü im Chat.</p>
+              <!-- The four values are the CLI's own enum for the PERSISTED key, measured and stored in
+                   test/fixtures/cli-settings-schema-2.1.288.json; test/settings-catalog.test.js asserts this
+                   list against that fixture. „max" stood here and is gone: settings.json declares
+                   `effortLevel: enum(["low","medium","high","xhigh"]).optional().catch(void 0)`
+                   (claude.exe 2.1.288 @204694740), and `.catch(void 0)` drops an off-enum value SILENTLY —
+                   the select showed „max" while the CLI ran on its default, and the measurement proving it
+                   was already in this repo, unread. `max` IS a real live level (apply_flag_settings per
+                   chat, → PR-6/A3); it is just not a persistable one. A „max" already on disk is not
+                   swallowed either: quickSelect() keeps it as its own „max ⚠" row. -->
+              <label><span data-i18n="html.aufwandsstufe">Aufwandsstufe</span> <span class="muted" data-i18n="html.maxNurLive">· „max" nur live je Chat</span>
+                <select id="qsEffort"><option value="low" data-i18n="html.niedrig">niedrig</option><option value="medium" data-i18n="html.mittel">mittel</option><option value="high" data-i18n="html.hoch">hoch</option><option value="xhigh" data-i18n="html.xhigh">xhigh</option></select>
+              </label>
+              <label><span data-i18n="common.modell">Modell</span>
+                <input id="qsModel" type="text" placeholder="(Standard)" data-i18n-ph="html.standard" spellcheck="false" />
+              </label>
+              <!-- K1: #accentNote prints what the chosen accent MEASURES as a text colour, per theme —
+                   and says so out loud when 4,5:1 was only reachable by shifting the lightness so far that
+                   the tone is no longer the colour in the picker. -->
+              <label><span data-i18n="html.panelAkzent">Panel-Akzent</span> <span class="muted" data-i18n="html.nurDieseUi">· nur diese UI</span>
+                <input id="qsAccent" type="color" value="#d97757" />
+              </label>
+              <p class="hint" id="accentNote"></p>
+              <label><span data-i18n="html.standardArbeitsverzeichnis">Standard-Arbeitsverzeichnis</span> <span class="muted" data-i18n="html.neueChatsNurDiese">· neue Chats · nur diese UI</span>
+                <input id="qsDefaultCwd" type="text" placeholder="(Home)" data-i18n-ph="html.home" spellcheck="false" list="cwdList" />
+              </label>
+              <!-- The claude binary the panel drives. Empty = auto-detection (lib/paths resolveClaudeBin);
+                   the field exists for the machine where detection misses, so nobody has to edit
+                   ui-prefs.json or set an env var. #claudeBinNote reports the resolved path + source. -->
+              <label><span data-i18n="html.claudeBinary">Claude-Binary</span> <span class="muted" data-i18n="html.leerAutomatischErkannt">· leer = automatisch erkannt</span>
+                <input id="qsClaudeBin" type="text" placeholder="(automatisch)" data-i18n-ph="html.automatischErkannt" spellcheck="false" />
+              </label>
+              <!-- CLAUDE_CODE_MCP_STARTUP_WAIT_MS (CLI 2.1.274): with many MCP servers the first turn
+                   waits minutes for all of them and the tab sits on "◌ startet…". Empty = the CLI's
+                   own behaviour; a value bounds the wait (the servers keep connecting either way). -->
+              <label><span data-i18n="html.mcpStartwartezeit">MCP-Startwartezeit</span> <span class="muted" data-i18n="html.msLeerOhneGrenze">· ms · leer = ohne Grenze</span>
+                <input id="qsMcpWait" type="number" min="1000" max="600000" step="1000" placeholder="—" />
+              </label>
+            </div>
+            <p class="hint" id="claudeBinNote"></p>
+            <p class="hint" data-i18n="html.themeEffortModellBearbeiten">Theme / Effort / Modell bearbeiten das JSON unten live (Speichern schreibt die Datei, mit Backup). Der Akzent färbt nur dieses Control Panel und wird im Browser gespeichert.</p>
+          </div>
+
+          <div class="card" id="sec-more">
+            <h3><span data-i18n="html.weitereEinstellungen">Weitere Einstellungen</span> <span class="muted" data-i18n="html.settingsJsonSpeichertSofort">· settings.json · speichert sofort</span></h3>
+            <div class="setting-list" id="moreSettings"></div>
+            <p class="hint" data-i18n="html.kuratierteBelegteClaudeCode">Kuratierte, belegte Claude-Code-Optionen. Alles Übrige direkt im JSON unten — das ist die Quelle der Wahrheit.</p>
+          </div>
+
+          <!-- D1/D2/D4: the standing context. All three feed the SAME channel (the appended system
+               prompt), so they belong in one place instead of three. -->
+          <div class="card" id="sec-guard">
+            <h3><span data-i18n="html.leitplankenKorrekturen">Leitplanken &amp; Korrekturen</span> <span class="muted" data-i18n="html.giltFuerNeueChats">· gilt für neue Chats</span></h3>
+            <p class="hint" data-i18n="html.leitplankenHinweis">Randbedingungen, die in jedem neuen Chat gelten — ohne sie zu wiederholen. Sie werden als System-Hinweis übergeben und überleben damit auch eine Kompaktierung. Pro Chat lässt sich das im Tab-Menü ergänzen.</p>
+            <textarea id="qsGuardrails" class="json-editor guard-editor" rows="5" spellcheck="false" placeholder="T01 ist das Testsystem — Produktivdaten nie kopieren.&#10;Nichts pushen und keinen Transport freigeben ohne ausdrückliches OK." data-i18n-ph="html.leitplankenPlaceholder"></textarea>
+            <div class="guard-row">
+              <span class="save-note" id="guardNote"></span>
+              <button id="guardSave" class="primary-btn" data-i18n="common.speichern">Speichern</button>
+            </div>
+            <label class="co-check"><input type="checkbox" id="qsUseCorrections" checked /> <span data-i18n="html.korrekturenEinspielen">✎ Frühere Korrekturen an neue Chats mitgeben</span></label>
+            <label class="co-check"><input type="checkbox" id="qsOpenPoints" checked /> <span data-i18n="html.offenePunkteProtokoll">❓ Offene Punkte in der Seitenleiste zulassen</span></label>
+            <label class="co-check"><input type="checkbox" id="qsPlanProgress" checked /> <span data-i18n="html.planFortschrittProtokoll">📋 Plan-Fortschritt in der Seitenleiste zeigen</span></label>
+            <!-- PR-S: ob ein GEÄNDERTER Anhang eine fortgesetzte Sitzung überhaupt erreicht. Gemessen 2026-10-03
+                 (CLI 2.1.288): mit dem CLI-Standard „an" schickt jedes Fortsetzen den beim ersten Request
+                 aufgezeichneten System-Prompt, bis zur Kompaktierung. Die Wahl steht deshalb hier, neben dem,
+                 was sie betrifft (Leitplanken, Korrekturen, Stil) — nicht bei den settings.json-Optionen,
+                 denn sie ist ein Startargument des Panels (ui-prefs.json), kein CLI-Setting. -->
+            <div class="snap-row">
+              <label class="snap-mode"><span data-i18n="html.promptSnapshot">Prompt-Snapshot</span>
+                <select id="qsPromptSnapshot">
+                  <option value="off" data-i18n="html.promptSnapshotAus">aus — beim Fortsetzen neu aufbauen (Standard)</option>
+                  <option value="on" data-i18n="html.promptSnapshotAn">an — Aufzeichnung bis zur Kompaktierung weiterverwenden (CLI-Standard)</option>
+                </select>
+              </label>
+              <p class="hint" data-i18n="html.promptSnapshotHinweis">Die CLI zeichnet den System-Prompt beim ersten Request einer Sitzung auf und schickt beim Fortsetzen diese Aufzeichnung — auch wenn Leitplanken, Korrekturen oder Stil inzwischen geändert wurden, bis zur nächsten Kompaktierung. „aus" zeichnet nichts auf: laut CLI wird der Prompt bei jedem Request neu aufgebaut, Änderungen wirken also beim nächsten Fortsetzen — auch „Leitplanken jetzt anwenden". Preis, soweit gemessen: ein Fortsetzen mit geändertem Text und „aus" schrieb rund 16.500 Token in den Cache (mit „an": rund 500). Nicht gemessen: was „aus" bei unverändertem Text kostet und ob der Cache danach von Turn zu Turn wieder voll trifft. Gilt für Chats und Zeitpläne.</p>
+              <p class="hint" id="snapNote"></p>
+            </div>
+            <div class="guard-corrections">
+              <div class="cfg-head"><h4 data-i18n="html.gespeicherteKorrekturen">Gespeicherte Korrekturen</h4><span class="muted" id="corrCount"></span></div>
+              <div id="corrList"><div class="loading" data-i18n="common.lade">Lade…</div></div>
+            </div>
+          </div>
+
+          <!-- #34: the standing subagent policy. Same channel as the guardrails (a launch decision that
+               every new chat inherits), so it sits next to them — and a chat can override it per tab. -->
+          <div class="card" id="sec-subagents">
+            <h3><span data-i18n="html.agentenUndWorkflows">Agenten &amp; Workflows</span> <span class="muted" data-i18n="html.giltFuerNeueChats">· gilt für neue Chats</span></h3>
+            <p class="hint" data-i18n="html.subagentenHinweis">Ein Turn kann Unter-Agenten starten, die ein eigenes Modell fahren und eigene Tokens verbrauchen. Hier steht, was dabei gilt — pro Chat lässt sich das im Tab-Menü überschreiben. Wirkt beim nächsten Start eines Chats.</p>
+            <div class="quick-grid">
+              <label><span data-i18n="html.subagentenErlauben">Subagenten erlauben</span>
+                <select id="saAllow">
+                  <option value="1" data-i18n="html.ja">ja</option>
+                  <option value="0" data-i18n="html.neinKeineSubagenten">nein · Agent-Werkzeug abgeschaltet</option>
+                </select>
+              </label>
+              <label><span data-i18n="common.modell">Modell</span>
+                <select id="saModel">
+                  <option value="" data-i18n="html.standardCli">(Standard der CLI)</option>
+                  <option value="inherit" data-i18n="html.wieHauptmodell">wie das Hauptmodell</option>
+                  <option value="opus">Opus</option>
+                  <option value="sonnet">Sonnet</option>
+                  <option value="haiku">Haiku</option>
+                  <option value="fable">Fable</option>
+                </select>
+              </label>
+              <label><span data-i18n="html.parallel">parallel</span> <span class="muted" data-i18n="html.leerOhneGrenze">· leer = ohne Grenze</span>
+                <input id="saConcurrent" type="number" min="1" max="20" placeholder="—" />
+              </label>
+              <label><span data-i18n="html.proSitzung">pro Sitzung</span> <span class="muted" data-i18n="html.leerOhneGrenze">· leer = ohne Grenze</span>
+                <input id="saPerSession" type="number" min="1" max="200" placeholder="—" />
+              </label>
+              <label><span data-i18n="html.verschachtelungstiefe">Verschachtelungstiefe</span> <span class="muted">· Standard 3</span>
+                <input id="saDepth" type="number" min="1" max="10" placeholder="3" />
+              </label>
+            </div>
+            <label class="co-check"><input type="checkbox" id="saForce" /> <span data-i18n="html.subagentenErzwingen">Modell erzwingen — das Hauptmodell darf es pro Aufruf nicht überschreiben</span></label>
+            <!-- Two stream widenings. Forwarding is ON by default because a foreground subagent has
+                 no other record at all; hook events are off because most machines have no hooks. -->
+            <label class="co-check"><input type="checkbox" id="saForward" checked /> <span data-i18n="html.subagentenTextWeiterleiten">Text von Vordergrund-Subagenten mitschicken — sonst bleibt deren Verlauf leer</span></label>
+            <label class="co-check"><input type="checkbox" id="saHooks" /> <span data-i18n="html.hookEreignisse">Hook-Ereignisse zeigen — welcher Hook wann gefeuert hat (Seitenleiste)</span></label>
+            <!-- Ultracode: dieselbe Frage wie die Obergrenzen darüber, nur von der anderen Seite —
+                 „darf das Modell von sich aus einen ganzen Agenten-Workflow aufsetzen?" Session-weiter
+                 Settings-Key, pro Chat im Tab-Menü überschreibbar, live umschaltbar. -->
+            <label class="co-check"><input type="checkbox" id="saUltracode" /> <span data-i18n="html.ultracodeStandard">Ultracode als Standard — das Modell orchestriert bei jeder Aufgabe einen dynamischen Workflow aus mehreren Agenten (braucht ein Modell mit xhigh, z. B. Sonnet/Opus 5)</span></label>
+            <p class="hint" id="saUcNote"></p>
+            <p class="hint" id="saNote"></p>
+          </div>
+
+          <div class="card" id="sec-perms">
+            <h3><span data-i18n="html.berechtigungen">Berechtigungen</span> <span class="muted" data-i18n="html.settingsLocalJsonSpeichert">· settings.local.json · speichert sofort</span></h3>
+            <label class="perm-mode"><span data-i18n="html.standardModus">Standard-Modus</span>
+              <select id="permDefaultMode">
+                <option value="" data-i18n="html.nichtGesetzt">(nicht gesetzt)</option>
+                <option value="default" data-i18n="html.defaultFragtBeiBedarf">default · fragt bei Bedarf</option>
+                <option value="acceptEdits" data-i18n="html.acceptedits">acceptEdits</option>
+                <option value="plan" data-i18n="html.planNurLesen">plan · nur Lesen</option>
+                <option value="bypassPermissions" data-i18n="html.bypasspermissions">bypassPermissions ⚠</option>
+              </select>
+            </label>
+            <div class="perm-cols">
+              <div>
+                <div class="perm-h" data-i18n="common.erlauben">Erlauben</div>
+                <div class="chip-list" id="allowList"></div>
+                <div class="chip-add"><input id="allowInput" placeholder="Bash(git *)" spellcheck="false" /><button class="ghost-btn" id="allowAdd" data-i18n="html.hinzufuegen">Hinzufügen</button></div>
+              </div>
+              <div>
+                <div class="perm-h" data-i18n="common.ablehnen">Ablehnen</div>
+                <div class="chip-list" id="denyList"></div>
+                <div class="chip-add"><input id="denyInput" placeholder="Read(./.env)" spellcheck="false" /><button class="ghost-btn" id="denyAdd" data-i18n="html.hinzufuegen">Hinzufügen</button></div>
+              </div>
+            </div>
+          </div>
+
+          <div class="card" id="sec-env">
+            <h3><span data-i18n="html.umgebungsvariablen">Umgebungsvariablen</span> <span class="muted" data-i18n="html.settingsJsonEnvSpeichert">· settings.json → env · speichert sofort</span></h3>
+            <div class="env-list" id="envList"></div>
+            <div class="chip-add"><input id="envKey" placeholder="KEY" spellcheck="false" /><input id="envVal" placeholder="value" data-i18n-ph="html.wert" spellcheck="false" /><button class="ghost-btn" id="envAdd" data-i18n="html.hinzufuegen">Hinzufügen</button></div>
+          </div>
+
+          <div class="card" id="sec-hooks">
+            <h3><span data-i18n="html.hooks">Hooks</span> <span class="muted" data-i18n="html.settingsJsonHooksSpeichert">· settings.json → hooks · speichert sofort</span></h3>
+            <div class="env-list" id="hookList"></div>
+            <!-- PR-11: the nine hard-coded <option> elements are GONE. They were a subset — the CLI knows 33
+                 events (measured: `get_hooks_listing.eventCatalog`, see public/js/hooks-catalog.js) — and the
+                 hint beside them stated a matcher rule that was wrong for six of the nine. The list is filled
+                 from the CLI when a session is running and from the nine known names when none is, and in that
+                 case it SAYS so (#hookEventNote) instead of looking like a reading. -->
+            <div class="hook-add">
+              <!-- SELECT-NAME: the one select in this file that had no name at all — no label, no title.
+                   „Hook-Event" is also what the row is about, so the visible hint below it stays the
+                   explanation and this is just the control's name. -->
+              <select id="hookEvent" aria-label="Hook-Event" data-i18n-aria="html.hookEvent"></select>
+              <input id="hookMatcher" placeholder="Matcher (Bash, Edit, *)" data-i18n-ph="html.matcherBashEdit" spellcheck="false" />
+              <input id="hookCmd" placeholder="auszuführender Befehl" data-i18n-ph="html.auszufuehrenderBefehl" spellcheck="false" />
+              <button class="ghost-btn" id="hookAdd" data-i18n="html.hinzufuegen">Hinzufügen</button>
+            </div>
+            <p class="hint" id="hookEventNote"></p>
+            <p class="hint"><span data-i18n="html.hooksFuehrenShellBefehle">⚠ Hooks führen Shell-Befehle beim gewählten Event </span><strong data-i18n="html.automatisch-2">automatisch</strong><span data-i18n="html.hooksAutomatischAus"> aus.</span></p>
+            <div id="hookEffective"></div>
+          </div>
+
+          <div class="card" id="sec-catalog">
+            <div class="cfg-head"><h3><span data-i18n="html.optionenKatalog">Optionen-Katalog</span> <span class="muted" data-i18n="html.dokumentierteSettingsKeys">· dokumentierte Settings-Keys</span></h3><input id="catSearch" class="search" type="search" placeholder="🔍 Option suchen…" data-i18n-ph="html.optionSuchen" /></div>
+            <div class="cat-list" id="catList"></div>
+            <p class="hint" data-i18n="html.einfuegenSchreibtDenKey">„Einfügen" schreibt den Key mit Beispielwert in den passenden JSON-Editor (settings.json / .local.json) — prüfen und dann Speichern. Roh-JSON bleibt die Quelle der Wahrheit.</p>
+          </div>
+
+          <div class="editor-grid" id="sec-json">
+            <div class="card editor-card">
+              <div class="editor-head"><h3>settings.json</h3><span class="dirty-badge hidden" id="dirtyMain" data-i18n="html.ungespeichert">● ungespeichert</span><span class="valid-badge" id="validMain" data-i18n="html.gueltig">gültig</span></div>
+              <div class="error-card sett-broken hidden" id="brokenMain" role="alert"></div>
+              <textarea id="editMain" class="json-editor" spellcheck="false"></textarea>
+              <div class="editor-actions">
+                <span class="save-note" id="noteMain"></span>
+                <button class="ghost-btn" data-format="editMain" data-ic="braces" data-label="Format" data-i18n-label="html.format"></button>
+                <button class="ghost-btn" data-reset="main" data-i18n="html.zuruecksetzen">Zurücksetzen</button>
+                <button class="primary-btn" id="saveMain" data-i18n="html.settingsJsonSpeichern">settings.json speichern</button>
+              </div>
+            </div>
+            <div class="card editor-card">
+              <div class="editor-head"><h3>settings.local.json</h3><span class="dirty-badge hidden" id="dirtyLocal" data-i18n="html.ungespeichert">● ungespeichert</span><span class="valid-badge" id="validLocal" data-i18n="html.gueltig">gültig</span></div>
+              <div class="error-card sett-broken hidden" id="brokenLocal" role="alert"></div>
+              <textarea id="editLocal" class="json-editor" spellcheck="false"></textarea>
+              <div class="editor-actions">
+                <span class="save-note" id="noteLocal"></span>
+                <button class="ghost-btn" data-format="editLocal" data-ic="braces" data-label="Format" data-i18n-label="html.format"></button>
+                <button class="ghost-btn" data-reset="local" data-i18n="html.zuruecksetzen">Zurücksetzen</button>
+                <button class="primary-btn" id="saveLocal" data-i18n="html.settingsLocalJsonSpeichern">settings.local.json speichern</button>
+              </div>
+            </div>
+          </div>
+
+          <div class="info-cards" id="sec-info">
+            <div class="card info-card">
+              <h3 data-i18n="html.ueber">ℹ Über</h3>
+              <div class="about-app">
+                <div class="about-logo" aria-hidden="true">
+                  <svg class="bm-net" viewBox="0 0 24 24">
+                    <line class="bm-edge" x1="12" y1="3" x2="21" y2="12"/><line class="bm-edge" x1="21" y1="12" x2="12" y2="21"/>
+                    <line class="bm-edge" x1="12" y1="21" x2="3" y2="12"/><line class="bm-edge" x1="3" y1="12" x2="12" y2="3"/>
+                    <line class="bm-edge" x1="12" y1="3" x2="12" y2="21"/><line class="bm-edge" x1="3" y1="12" x2="21" y2="12"/>
+                    <circle class="bm-node" cx="12" cy="3" r="1.9"/><circle class="bm-node" cx="21" cy="12" r="1.9"/><circle class="bm-node" cx="12" cy="21" r="1.9"/><circle class="bm-node" cx="3" cy="12" r="1.9"/>
+                  </svg>
+                  <svg class="bm-star" viewBox="0 0 24 24"><path d="M12 1.4 L13.38 8.67 L19.5 4.5 L15.33 10.62 L22.6 12 L15.33 13.38 L19.5 19.5 L13.38 15.33 L12 22.6 L10.62 15.33 L4.5 19.5 L8.67 13.38 L1.4 12 L8.67 10.62 L4.5 4.5 L10.62 8.67Z"/></svg>
+                  <span class="bm-ui">ui</span>
+                </div>
+                <div>
+                  <div class="about-name">Claude Code · Control Panel</div>
+                  <div class="about-sub" id="aboutVer">—</div>
+                </div>
+              </div>
+              <p class="about-desc" data-i18n="html.lokaleBrowserOberflaecheFuer">Lokale Browser-Oberfläche für die Claude Code CLI — Chat mit parallelen Sessions, Diff-Review, Token-Analytics, MCP, Skills und GUI-gesteuerte UI Skills. Pure Node, zero-dependency, bindet nur an 127.0.0.1.</p>
+              <dl class="about-dl">
+                <dt data-i18n="html.entwickler">Entwickler</dt><dd>Julian Haupt</dd>
+                <dt data-i18n="html.github">GitHub</dt><dd><span class="mono">nutshell86/cloud-code-ui</span> <span data-i18n="html.ghePrivat">(öffentlich)</span></dd>
+                <dt data-i18n="html.stack">Stack</dt><dd data-i18n="html.nodeHttpSseVanilla">Node (HTTP + SSE) · Vanilla JS (modular, ohne Build) · keine Runtime-Dependencies</dd>
+                <dt data-i18n="html.datenschutz">Datenschutz</dt><dd data-i18n="html.localOnlyKeineExternen">Läuft nur lokal (127.0.0.1) · externe Calls nur für Update-Checks/GHE/Spend · Kosten sind Schätzungen</dd>
+              </dl>
+              <p class="about-note" id="aboutHost">—</p>
+            </div>
+
+            <div class="card info-card">
+              <h3 data-i18n="html.verbindung">🔌 Verbindung</h3>
+              <dl class="about-dl" id="connDetail"><dt data-i18n="html.status">Status</dt><dd>—</dd></dl>
+              <p class="about-note"><span data-i18n="html.dieUiPolltDen">Die UI pollt den Server alle 5 s (</span><span class="mono">/api/ping</span><span data-i18n="html.derLiveStreamVerbindet">). Der Live-Stream verbindet sich automatisch neu (</span><span class="mono">retry 2 s</span><span data-i18n="html.keepaliveAlle20S">, Keepalive alle 20 s).</span></p>
+            </div>
+
+            <div class="card info-card">
+              <h3 data-i18n="html.tastenkuerzel">⌨ Tastenkürzel</h3>
+              <table class="kbd-table">
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>K</kbd></td><td data-i18n="html.befehlspaletteViewsSessionsSlash">Befehlspalette (Views, Sessions, Slash, Prompts, SAP-Vorlagen)</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>F</kbd></td><td data-i18n="html.imChatSuchen">Im Chat suchen</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>Shift</kbd>+<kbd>F</kbd></td><td data-i18n="html.alleSessionsNachInhalt">Alle Sessions nach Inhalt durchsuchen</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>Shift</kbd>+<kbd>H</kbd></td><td data-i18n="html.promptHistorieDurchsuchen">Prompt-Historie durchsuchen (Terminal + Panel) und übernehmen</td></tr>
+                <tr><td><kbd>Enter</kbd></td><td><span data-i18n="html.nachrichtSenden">Nachricht senden · </span><kbd>Shift</kbd>+<kbd>Enter</kbd><span data-i18n="html.neueZeile"> neue Zeile</span><span data-i18n="html.altEnterNeueZeile"> · Alt+Enter neue Zeile</span></td></tr>
+                <tr><td><kbd>Enter</kbd> / <kbd>Shift</kbd>+<kbd>Enter</kbd><span data-i18n="html.inDerChatSuche"> in der Chat-Suche</span></td><td data-i18n="html.naechsterVorherigerTreffer">Nächster / vorheriger Treffer</td></tr>
+                <tr><td><kbd>Enter</kbd><span data-i18n="html.waehrendAntwortLaeuft"> während Antwort läuft</span></td><td data-i18n="html.nachrichtInDieWarteschlange">Nachricht in die Warteschlange stellen (wird nach dem Turn automatisch gesendet)</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>Enter</kbd><span data-i18n="html.waehrendAntwortLaeuft"> während Antwort läuft</span></td><td data-i18n="html.sofortSenden">Sofort senden: den laufenden Turn abbrechen und stattdessen diese Nachricht schicken</td></tr>
+                <tr><td><kbd>@</kbd></td><td data-i18n="html.dateiImArbeitsverzeichnisErwaehnen">Datei im Arbeitsverzeichnis erwähnen</td></tr>
+                <tr><td><kbd>/</kbd></td><td data-i18n="html.slashCommandAutocomplete">Slash-Command-Autocomplete</td></tr>
+                <tr><td><kbd>↵</kbd> / <kbd>Tab</kbd><span data-i18n="html.imSlashMenue"> im Slash-Menü</span></td><td data-i18n="html.uiSkillFormularOderText">UI-Skill (▶): Enter öffnet das Formular · Tab fügt den Befehl als Text ein</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>Enter</kbd><span data-i18n="html.imUiSkillFormular"> im UI-Skill-Formular</span></td><td data-i18n="html.uiSkillLaufStarten">UI-Skill-Lauf starten</td></tr>
+                <tr><td><kbd>↑</kbd> / <kbd>↓</kbd></td><td data-i18n="html.promptVerlaufDurchblaetternLeeres">Prompt-Verlauf durchblättern (leeres/einzeiliges Feld)</td></tr>
+                <tr><td><kbd>Esc</kbd><span data-i18n="html.waehrendAntwortLaeuft2"> während Antwort läuft</span></td><td data-i18n="html.escZweimalStoppt">Zweimal drücken stoppt den laufenden Turn (nach Dialogen/Popovers) · ein zweites Stoppen holt den Prozess hart neu, der Verlauf bleibt</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>I</kbd></td><td data-i18n="html.eingabefeldFokussieren">Eingabefeld fokussieren</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>↑</kbd>/<kbd>↓</kbd></td><td data-i18n="html.zwischenEigenenNachrichten">Zwischen den eigenen Nachrichten springen</td></tr>
+                <tr><td><kbd data-i18n="html.strg">Strg</kbd>+<kbd>+</kbd> / <kbd>−</kbd> / <kbd>0</kbd></td><td data-i18n="html.panelZoomKuerzel">Ganzes Panel größer / kleiner / zurück auf 100 % (Browser-Zoom, wird für dieses Panel gemerkt)</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>T</kbd></td><td data-i18n="html.neuerTabParalleleSession">Neuer Tab (parallele Session)</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>Shift</kbd>+<kbd>T</kbd></td><td data-i18n="html.zuletztGeschlossenenTabWiederherstellen">Zuletzt geschlossenen Tab wiederherstellen</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>W</kbd></td><td data-i18n="html.aktivenTabSchliessen">Aktiven Tab schließen</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>1</kbd>…<kbd>9</kbd></td><td data-i18n="html.zuTabNSpringen">Zu Tab N springen</td></tr>
+                <tr><td><kbd>Alt</kbd>+<kbd>←</kbd>/<kbd>→</kbd></td><td data-i18n="html.vorherigerNaechsterTab">Vorheriger / nächster Tab</td></tr>
+                <tr><td data-i18n="html.doppelklickTab">Doppelklick Tab</td><td data-i18n="html.tabUmbenennen">Tab umbenennen</td></tr>
+                <tr><td data-i18n="html.rechtsklickTab">Rechtsklick Tab</td><td data-i18n="html.menueStoppenUmbenennenFork">Menü: Stoppen · Umbenennen · Fork · MCP-Server · Farbe · Andere/Schließen</td></tr>
+                <tr><td data-i18n="html.middleClickTab">Middle-Click Tab</td><td data-i18n="html.tabSchliessen">Tab schließen</td></tr>
+                <tr><td><kbd>Esc</kbd></td><td data-i18n="html.paletteModalSucheSchliessen">Palette / Modal / Suche schließen</td></tr>
+                <tr><td><kbd>?</kbd></td><td data-i18n="html.dieseKuerzelUebersicht">Diese Kürzel-Übersicht öffnen (außerhalb von Eingabefeldern)</td></tr>
+                <tr><td data-i18n="html.klickErgebnisKarte">⛶ in der Ergebnis-Karte</td><td data-i18n="html.ergebnisVollbildEsc">Ergebnis auf Vollbild · Esc schließt es wieder</td></tr>
+                <tr><td data-i18n="html.klickNavigation">« oben in der Navigation</td><td data-i18n="html.navigationEinklappenGemerkt">Navigation auf die Symbolleiste einklappen · wird gemerkt (unter 820 px ohnehin eingeklappt)</td></tr>
+                <tr><td data-i18n="html.klickSkillListe">◀ über der Skill-Liste</td><td data-i18n="html.skillListeEinklappenZiehen">Skill-Liste auf Icon-Spalte einklappen · Trennlinie ist ziehbar (Doppelklick = Standard)</td></tr>
+              </table>
+            </div>
+
+            <div class="card info-card info-changelog">
+              <h3><span data-i18n="html.changelog">📋 Changelog</span> <span class="muted" id="clCount"></span> <button class="ghost-btn cl-reload" id="clReload" title="Neu laden" data-i18n-title="html.neuLaden" aria-label="Reload">↻</button></h3>
+              <p class="about-desc" data-i18n="html.liveAusDerGit">Live aus der Git-Historie dieses Repos.</p>
+              <div class="changelog-list" id="changelogList"><div class="loading" data-i18n="html.ladeChangelog">Lade Changelog…</div></div>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MCP & PLUGINS VIEW -->
+      <section class="view" id="view-mcp">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.mcpPlugins">MCP &amp; Plugins</h1></div>
+          <div class="topbar-actions">
+            <input id="mcpToolSearch" class="search" type="search" placeholder="🔍 Tools durchsuchen…" data-i18n-ph="html.toolsDurchsuchen" />
+            <button id="mcpAdd" class="primary-btn" data-i18n="html.serverHinzufuegen">+ Server hinzufügen</button>
+            <button id="mcpInventory" class="ghost-btn" title="Inventar als Markdown exportieren" data-i18n-title="html.inventarAlsMarkdownExportieren" data-ic="download" data-label="Inventar" data-i18n-label="html.inventar"></button>
+            <button id="mcpToolsBtn" class="ghost-btn" title="Tools jedes erreichbaren Servers direkt per MCP-Protokoll abfragen (verbindet sich kurz zu jedem Server; nur Tool-Schemas, keine Daten)" data-i18n-title="html.toolsJedesErreichbarenServers">🔄 <span class="btxt" data-i18n="html.toolsAbfragen">Tools abfragen</span></button>
+            <label class="mcp-auto" title="Beim Öffnen der Ansicht automatisch die Tools aller Server abfragen (verbindet sich zu allen Servern, inkl. SAP/Jira/ServiceNow)" data-i18n-title="html.beimOeffnenDerAnsicht"><input type="checkbox" id="mcpAutoProbe" /> <span data-i18n="html.auto">Auto</span></label>
+            <button id="mcpCheck" class="ghost-btn" data-i18n="html.nachUpdatesSuchen">⟳ Nach Updates suchen</button>
+            <button id="mcpReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div class="settings-scroll">
+          <div class="card">
+            <h3><span data-i18n="html.mcpServer">MCP-Server</span> <span class="muted" id="mcpCount"></span></h3>
+            <div class="mcp-grid" id="mcpGrid"><div class="loading" data-i18n="html.serverStatusWirdGeprueft">Server-Status wird geprüft…</div></div>
+          </div>
+          <div class="card">
+            <h3 data-i18n="html.aktiviertePlugins">Aktivierte Plugins</h3>
+            <div class="plugins-list" id="pluginsList"></div>
+            <p class="hint"><span data-i18n="html.umschaltenSchreibt">Umschalten schreibt </span><code>enabledPlugins</code><span data-i18n="html.inSettingsJsonClaude"> in settings.json. Claude Code neu starten, um zu übernehmen.</span></p>
+          </div>
+        </div>
+      </section>
+
+      <!-- USAGE VIEW -->
+      <section class="view" id="view-usage">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.nutzungKosten">Nutzung &amp; Kosten</h1><span class="session-chip" id="usageScope" data-i18n="html.alleSitzungen">alle Sitzungen</span></div>
+          <div class="topbar-actions">
+            <button id="usageCsv" class="ghost-btn" data-ic="download" data-label="Export CSV" data-i18n-label="html.csvExport"></button>
+            <button id="usageReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div class="settings-scroll">
+          <div id="spendCard" class="spend-card hidden"></div>
+          <div class="date-filter" id="dateFilter"></div>
+          <div class="usage-filters">
+            <label><span data-i18n="html.ordner">Ordner</span> <span id="uProjectMount"></span></label>
+            <label><span data-i18n="html.panelProjekt">Panel-Projekt</span> <span id="uPProjectMount"></span></label>
+            <label><span data-i18n="common.modell">Modell</span> <span id="uModelMount"></span></label>
+          </div>
+          <div class="kpi-row" id="kpiRow"><div class="loading" data-i18n="html.tokenNutzungUeberAlle">Token-Nutzung über alle Sitzungen wird berechnet…</div></div>
+          <div class="card">
+            <div class="chart-head">
+              <h3><span data-i18n="html.verlauf">Verlauf</span> <span class="muted" id="tsRangeLbl"></span></h3>
+              <div class="chart-ctrl">
+                <span class="seg" id="tsMetric">
+                  <button data-m="tokens" class="active" data-i18n="common.tokens">Tokens</button><button data-m="messages" data-i18n="html.nachrichten">Nachrichten</button><button data-m="cost" data-i18n="html.kosten">Kosten</button>
+                </span>
+                <span class="seg" id="tsGroup">
+                  <button data-g="day" class="active" data-i18n="html.tag">Tag</button><button data-g="week" data-i18n="html.woche">Woche</button><button data-g="month" data-i18n="html.monat">Monat</button>
+                </span>
+              </div>
+            </div>
+            <div class="chart" id="chartCost"></div>
+          </div>
+          <div class="card">
+            <h3><span data-i18n="html.aktivitaetsmuster">Aktivitätsmuster</span> <span class="muted" data-i18n="html.wochentagStundeTokens">· Wochentag × Stunde (Tokens)</span></h3>
+            <div class="punchcard" id="chartHeat"></div>
+          </div>
+          <div class="usage-grid">
+            <div class="card">
+              <h3 data-i18n="html.tokenKompositionUeberZeit">Token-Komposition über Zeit</h3>
+              <div class="chart" id="chartStack"></div>
+            </div>
+            <div class="card">
+              <h3><span data-i18n="html.tokenKomposition">Token-Komposition</span> <span class="muted" data-i18n="html.gesamt">· gesamt</span></h3>
+              <div class="donut-wrap"><div class="chart donut-chart" id="chartTokens"></div><div class="donut-legend" id="tokensLegend"></div></div>
+            </div>
+          </div>
+          <div class="usage-grid">
+            <div class="card">
+              <h3 data-i18n="html.tokensProOrdner">Tokens pro Ordner</h3>
+              <div class="bars" id="projectBars"></div>
+            </div>
+            <div class="card">
+              <h3 data-i18n="html.tokensProModell">Tokens pro Modell</h3>
+              <div class="bars" id="modelBars"></div>
+            </div>
+          </div>
+          <div class="card">
+            <h3><span data-i18n="html.kumulierteAusgaben">Kumulierte Ausgaben</span> <span class="muted" data-i18n="html.geschaetztListenpreiseOhneEnterprise">· geschätzt (Listenpreise, ohne Enterprise-Rabatt)</span></h3>
+            <div class="chart" id="chartCumulative"></div>
+          </div>
+          <div class="card">
+            <div class="chart-head">
+              <h3><span data-i18n="html.tokensKosten">Tokens × Kosten</span> <span class="muted" data-i18n="html.kombiniert2Achsen">· kombiniert (2 Achsen)</span></h3>
+              <span class="chart-legend" id="comboLegend"></span>
+            </div>
+            <div class="chart" id="chartCombo"></div>
+          </div>
+          <div class="usage-grid">
+            <div class="card">
+              <h3><span data-i18n="html.kostenKompositionUeberZeit">Kosten-Komposition über Zeit</span> <span class="muted" data-i18n="html.est">· est.</span></h3>
+              <div class="chart" id="chartCostStack"></div>
+            </div>
+            <div class="card">
+              <h3><span data-i18n="html.kostenJeModell">Kosten je Modell</span> <span class="muted" data-i18n="html.anteilEst">· Anteil, est.</span></h3>
+              <div class="donut-wrap"><div class="chart donut-chart" id="chartCostDonut"></div><div class="donut-legend" id="costLegend"></div></div>
+            </div>
+          </div>
+          <div class="usage-grid">
+            <div class="card">
+              <h3><span data-i18n="html.kostenJeModell">Kosten je Modell</span> <span class="muted" data-i18n="html.est">· est.</span></h3>
+              <div class="bars" id="modelCostBars"></div>
+            </div>
+            <div class="card">
+              <h3><span data-i18n="html.kostenJeOrdner">Kosten je Ordner</span> <span class="muted" data-i18n="html.est">· est.</span></h3>
+              <div class="bars" id="projectCostBars"></div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="chart-head">
+              <h3><span data-i18n="html.sitzungen">Sitzungen</span> <span class="muted" id="sessCountLbl"></span></h3>
+              <input id="uSessSearch" class="search" type="search" placeholder="Sitzungen durchsuchen…" data-i18n-ph="html.sitzungenDurchsuchen" />
+            </div>
+            <div class="usage-table-wrap">
+              <table class="usage-table" id="topSessions"><thead><tr>
+                <th data-sort="title" data-i18n="html.sitzung">Sitzung</th><th data-sort="model" data-i18n="common.modell">Modell</th>
+                <th class="num" data-sort="messages" data-i18n="html.calls">Calls</th><th class="num" data-sort="tokens" data-i18n="common.tokens">Tokens</th>
+                <th class="num" data-sort="output" data-i18n="html.output">Output</th><th class="num" data-sort="cost" data-i18n="html.kosten">Kosten</th><th class="num" data-sort="mtime" data-i18n="html.aktiv">Aktiv</th><th></th>
+              </tr></thead><tbody></tbody></table>
+            </div>
+          </div>
+          <p class="hint"><span data-i18n="html.tokenZahlenAusDem">Token-Zahlen aus dem gespeicherten Per-Message-Usage (input · output · cache read · cache write). Kosten sind </span><strong data-i18n="html.schaetzungen">Schätzungen</strong><span data-i18n="html.aufBasisOeffentlicherListenpreise"> auf Basis öffentlicher Listenpreise (Cache-Read 0,1× · Cache-Write 1,25×/2×) — die tatsächliche Enterprise-Abrechnung weicht ab. Filter &amp; Zeitraum scopen alle Kacheln und Charts. Palette ist farbenblind-validiert.</span></p>
+        </div>
+      </section>
+
+      <!-- SKILLS VIEW -->
+      <section class="view" id="view-skills">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.skills">Skills</h1><span class="session-chip" id="skillsCount">—</span></div>
+          <div class="topbar-actions">
+            <input id="skillSearch" class="search" type="search" placeholder="Skills durchsuchen…" data-i18n-ph="html.skillsDurchsuchen" />
+            <button id="cmdNew" class="ghost-btn" data-i18n="html.neuerCommand">+ Neuer Command</button>
+            <button id="skillsReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div class="skills-layout">
+          <div class="skills-list" id="skillsList"></div>
+          <div class="skill-detail" id="skillDetail">
+            <div class="empty-state small"><div class="empty-glyph" data-ic="star"></div><p data-i18n="html.skillOderCommandWaehlen">Skill oder Command wählen — Inhalt, Ablaufplan und Aktionen erscheinen hier.</p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- UI SKILLS VIEW -->
+      <section class="view" id="view-uiskills">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.uiSkills">UI-Skills</h1><span class="session-chip" id="uiskillsCount">—</span></div>
+          <div class="topbar-actions">
+            <input id="uiskillSearch" class="search" type="search" placeholder="UI-Skills durchsuchen…" data-i18n-ph="html.uiSkillsDurchsuchen" />
+            <button id="uiskillNew" class="ghost-btn" data-i18n="html.neu-3">＋ Neu</button>
+            <button id="uiskillFromSkill" class="ghost-btn" data-i18n="html.ausSkill">Aus Skill…</button>
+            <button id="uiskillsReload" class="ghost-btn" title="Neu laden" data-i18n-title="html.neuLaden" aria-label="Reload">↻</button>
+          </div>
+        </header>
+        <div class="uiskill-layout">
+          <div class="uiskill-list" id="uiskillList"></div>
+          <div class="uiskill-splitter" id="uiskillSplitter" title="Breite ziehen" data-i18n-title="html.breiteZiehen" role="separator" aria-orientation="vertical" tabindex="0"></div>
+          <div class="uiskill-panel" id="uiskillPanel">
+            <div class="empty-state"><div class="empty-glyph" data-ic="play2"></div><p><span data-i18n="html.uiSkillWaehlenFormular">UI&nbsp;Skill wählen — Formular, Ausführung und Verlauf erscheinen hier.</span><br><span data-i18n="html.oder">Oder </span><b data-i18n="html.neu-4">＋&nbsp;Neu</b><span data-i18n="html.sym375ir8"> / </span><b data-i18n="html.ausSkill-2">Aus&nbsp;Skill…</b><span data-i18n="html.umEinenZuErstellen">, um einen zu erstellen.</span></p></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- SYSTEM VIEW -->
+      <section class="view" id="view-system">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="common.system">System</h1></div>
+          <div class="topbar-actions"><button id="sysReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button></div>
+        </header>
+        <div class="settings-scroll">
+          <nav class="sett-nav" id="sysNav">
+            <a href="#sys-overview"><span data-ic="info" data-ic-size="15"></span><span data-i18n="html.uebersicht">Übersicht</span></a>
+            <a href="#sys-backups"><span data-ic="folder" data-ic-size="15"></span><span data-i18n="html.backups">Backups</span></a>
+            <a href="#sys-health"><span data-ic="checkSquare" data-ic-size="15"></span><span data-i18n="html.health">Health</span></a>
+            <a href="#envCard" id="sysNavEnv"><span data-ic="leaf" data-ic-size="15"></span><span data-i18n="html.env">Env</span></a>
+            <a href="#sys-status"><span data-ic="steps" data-ic-size="15"></span><span data-i18n="html.statuszeile">Statuszeile</span></a>
+            <a href="#sys-agents"><span data-ic="fork" data-ic-size="15"></span><span data-i18n="html.subagenten">Subagenten</span></a>
+            <a href="#sys-plans"><span data-ic="map" data-ic-size="15"></span><span data-i18n="html.plaene">Pläne</span></a>
+            <a href="#sys-styles"><span data-ic="palette" data-ic-size="15"></span><span data-i18n="html.stile">Stile</span></a>
+            <a href="#sys-report"><span data-ic="bug" data-ic-size="15"></span><span data-i18n="html.fehlerMelden">Fehler melden</span></a>
+          </nav>
+          <div class="usage-grid" id="sys-overview">
+            <div class="card">
+              <h3><span data-i18n="html.systemInfo">System-Info</span> <span class="muted" data-i18n="html.umgebung">· Umgebung</span></h3>
+              <div id="sysInfo"><div class="loading" data-i18n="common.lade">Lade…</div></div>
+            </div>
+            <div class="card">
+              <h3><span data-i18n="html.account">Account</span> <span class="muted">· claude auth status</span></h3>
+              <div id="authInfo"><div class="loading" data-i18n="html.pruefe">Prüfe…</div></div>
+              <p class="hint"><span data-i18n="html.loginLogoutSindInteraktiv">Login/Logout sind interaktiv (Browser-OAuth) — </span><code>claude auth login</code><span data-i18n="html.sym375ir8"> / </span><code>logout</code><span data-i18n="html.imTerminalOder"> im Terminal, oder </span><code>!claude auth login</code><span data-i18n="html.inEinerSession"> in einer Session.</span></p>
+            </div>
+          </div>
+
+          <div class="card" id="sys-backups">
+            <div class="cfg-head"><h3><span data-i18n="html.backups">Backups</span> <span class="muted" id="backupCount">· ~/.claude/backups/claude-code-ui</span></h3><button class="ghost-btn" id="backupsReload" title="Neu laden" data-i18n-title="html.neuLaden" aria-label="Reload">↻</button></div>
+            <div id="backupsList"><div class="loading" data-i18n="common.lade">Lade…</div></div>
+            <p class="hint" data-i18n="html.geloeschteSessionsUeberschriebeneSettings">Gelöschte Sessions, überschriebene Settings und Config-Dateien landen hier. Wiederherstellen legt sie an ihren Ursprungsort zurück; Download lädt die Datei.</p>
+          </div>
+
+          <div class="card" id="sys-health">
+            <div class="cfg-head"><h3><span data-i18n="html.healthCheck">Health-Check</span> <span class="muted">· claude doctor</span></h3><button id="doctorRun" class="ghost-btn" data-i18n="html.neuPruefen">↻ Neu prüfen</button></div>
+            <div id="doctorOut" class="doctor-out"><div class="loading" data-i18n="html.pruefe">Prüfe…</div></div>
+          </div>
+
+          <div class="card" id="envCard" hidden>
+            <h3><span data-i18n="html.umgebungsvariablen">Umgebungsvariablen</span> <span class="muted" data-i18n="html.anthropicClaudeCcMaskiert">· ANTHROPIC_* · CLAUDE_* · CC_* (maskiert)</span></h3>
+            <div id="sysEnvList"></div>
+          </div>
+
+          <div class="card" id="sys-status">
+            <h3><span data-i18n="html.statuszeile">Statuszeile</span> <span class="muted">· settings.json → statusLine</span></h3>
+            <div class="quick-grid">
+              <label><span data-i18n="html.typ">Typ</span>
+                <select id="slType"><option value="" data-i18n="html.keine">(keine)</option><option value="command" data-i18n="html.command">command</option></select>
+              </label>
+              <label style="grid-column: span 2;"><span data-i18n="html.befehl">Befehl</span>
+                <input id="slCommand" type="text" placeholder="z. B. ~/.claude/statusline.sh" data-i18n-ph="html.zBClaudeStatusline" spellcheck="false" />
+              </label>
+            </div>
+            <div class="editor-actions"><span class="save-note" id="slNote"></span><button class="primary-btn" id="slSave" data-i18n="html.statuszeileSpeichern">Statuszeile speichern</button></div>
+          </div>
+
+          <div class="card" id="sys-agents">
+            <div class="cfg-head"><h3><span data-i18n="html.subagenten">Subagenten</span> <span class="muted">· ~/.claude/agents</span></h3><button class="ghost-btn" id="agentNew" data-i18n="html.neuerSubagent">+ Neuer Subagent</button></div>
+            <div class="cfg-grid" id="agentsList"></div>
+          </div>
+
+          <!-- A7: plan-mode artefacts. They are the result of the most expensive thinking in a
+               session and were invisible here — you could only find them in the file system. -->
+          <div class="card" id="sys-plans">
+            <div class="cfg-head"><h3><span data-i18n="html.plaene">Pläne</span> <span class="muted">· ~/.claude/plans</span></h3><button class="ghost-btn" id="plansReload" title="Neu laden" data-i18n-title="html.neuLaden" aria-label="Reload">↻</button></div>
+            <p class="hint" data-i18n="html.plaeneHinweis">Aus dem Plan-Modus. „Als Prompt" öffnet einen neuen Chat mit dem Plan als Nachricht.</p>
+            <div class="cfg-grid" id="plansList"><div class="loading" data-i18n="common.lade">Lade…</div></div>
+          </div>
+
+          <div class="card" id="sys-styles">
+            <div class="cfg-head"><h3><span data-i18n="html.ausgabestile">Ausgabestile</span> <span class="muted">· ~/.claude/output-styles</span></h3><button class="ghost-btn" id="styleNew" data-i18n="html.neuerStil">+ Neuer Stil</button></div>
+            <label class="active-style"><span data-i18n="html.aktiverAusgabestil">Aktiver Ausgabestil</span> <input id="activeStyle" type="text" placeholder="(Standard)" data-i18n-ph="html.standard" spellcheck="false" /><button class="ghost-btn" id="activeStyleSave" data-i18n="html.setzen">Setzen</button></label>
+            <div class="cfg-grid" id="stylesList"></div>
+          </div>
+
+          <div id="sys-report">
+            <div class="cfg-head"><h3 data-i18n="html.fehlerMelden">Fehler melden</h3></div>
+            <div class="bug-scroll" id="bugView"></div>
+          </div>
+        </div>
+      </section>
+
+      <!-- MEMORY VIEW -->
+      <section class="view" id="view-memory">
+        <header class="topbar">
+          <div class="topbar-title"><h1 data-i18n="html.speicher">Speicher</h1><span class="session-chip" id="memFileName" data-i18n="html.dateiWaehlen">Datei wählen</span></div>
+          <div class="topbar-actions">
+            <input id="memSearch" class="search" type="search" placeholder="🔍 Speicher durchsuchen…" data-i18n-ph="html.speicherDurchsuchen" />
+            <button id="memContentSearch" class="ghost-btn" data-i18n-title="views-memory.inhalteTitel" title="Dateiinhalte einmal laden, damit die Suche auch im Text findet"><span class="btxt" data-i18n="views-memory.memInhalteSuchen">Inhalte durchsuchen</span></button>
+            <button id="memNew" class="ghost-btn" data-i18n="html.neu">+ Neu</button>
+            <button id="memReload" class="ghost-btn" data-i18n="html.neuLaden-2">↻ Neu laden</button>
+          </div>
+        </header>
+        <div class="sessions-layout">
+          <div class="sessions-list" id="memList"></div>
+          <div class="mem-detail" id="memDetail">
+            <div class="mem-toolbar hidden" id="memToolbar">
+              <span class="seg" id="memMode" role="group" data-i18n-aria="views-memory.modusAria" aria-label="Ansicht"><button data-m="preview" class="active" aria-pressed="true" data-i18n="common.vorschau">Vorschau</button><button data-m="edit" aria-pressed="false" data-i18n="common.bearbeiten">Bearbeiten</button><button data-m="graph" aria-pressed="false" data-i18n="views-memory.graph">Graph</button></span>
+              <span class="mem-spacer"></span>
+              <span class="save-note" id="memNote"></span>
+              <button id="memExport" class="mini-btn" data-ic="download" data-label=".md" data-i18n-label="html.md"></button>
+              <button id="memDelete" class="mini-btn" title="Löschen" data-i18n-title="common.loeschen-2" aria-label="Löschen" data-i18n-aria="common.loeschen-2" data-ic="trash"></button>
+              <button id="memSave" class="primary-btn" disabled data-i18n="common.speichern">Speichern</button>
+            </div>
+            <div id="memPreview" class="mem-preview bubble"></div>
+            <textarea id="memEditor" class="json-editor mem-editor hidden" spellcheck="false" placeholder="Memory-Datei wählen…" data-i18n-ph="html.memoryDateiWaehlen" data-i18n-aria="views-memory.memEditorLabel" aria-label="Memory-Datei bearbeiten (Markdown)" disabled></textarea>
+            <!-- F-Graph: the memory link graph (built in views-memory.js from /api/memory's links[]) -->
+            <div id="memGraph" class="mem-graph hidden"></div>
+            <div id="memBacklinks" class="mem-backlinks"></div>
+            <div id="memEmpty" class="empty-state small"><div class="empty-glyph" data-ic="edit"></div><p data-i18n="html.memoryDateiLinksWaehlen">Memory-Datei links wählen — Vorschau, Verlinkungen und Bearbeiten erscheinen hier.</p></div>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <!-- Floating "approval pending" jump button (shown when a tool permission is unanswered) -->
+  <button id="permJump" class="perm-jump hidden" type="button" title="Zur offenen Freigabe springen" data-i18n-title="html.zurOffenenFreigabeSpringen" aria-live="polite">
+    <span class="pj-ic" aria-hidden="true">🔐</span><span class="pj-txt" data-i18n="html.freigabeAusstehend">Freigabe ausstehend</span>
+  </button>
+
+  <!-- Permission modal -->
+  <div class="modal-overlay hidden" id="permOverlay" role="dialog" aria-modal="true" aria-label="Tool-Freigabe" data-i18n-aria="html.toolFreigabe">
+    <!-- perm-modal keeps its own width (the shared .modal is 480px); presentPerm() adds .is-wide for
+         diff/plan bodies, where code has to be readable rather than just glanceable. -->
+    <div class="modal perm-modal" id="permModal">
+      <div class="modal-head"><span class="perm-icon" data-ic="lock" data-ic-size="20"></span><h3 id="permTitle" data-i18n="html.freigabeAngefragt">Freigabe angefragt</h3><span class="perm-queue hidden" id="permQueue"></span><button class="mini-btn perm-max-btn hidden" id="permMax" type="button" title="Breiter anzeigen" data-i18n-title="chat-perms.breiterAnzeigen">⛶</button></div>
+      <p class="perm-tab hidden" id="permTab"></p>
+      <p class="perm-tool" id="permToolLine"><span data-i18n="html.claudeMoechteDasTool">Claude möchte das Tool verwenden:</span> <strong id="permTool">tool</strong></p>
+      <p class="perm-desc hidden" id="permDesc"></p>
+      <pre class="perm-input" id="permInput"></pre>
+      <div class="perm-plan hidden" id="permPlan"></div>
+      <p class="perm-blocked hidden" id="permBlocked"></p>
+      <label class="perm-persist"><input type="checkbox" id="permPersist"> <span data-i18n="html.dauerhaftIn">dauerhaft in</span> <code>settings.local</code> <span data-i18n="html.speichern">speichern</span></label>
+      <!-- Three weights, not two: "Immer erlauben" is the most consequential button here (it grants a
+           standing permission), but it used to look exactly like "Ablehnen". Deny is pushed to the far
+           left (.perm-deny), "always" carries a warning outline (.warn-btn), Allow stays primary. -->
+      <div class="modal-actions">
+        <button class="ghost-btn perm-deny" id="permDeny" data-i18n="common.ablehnen">Ablehnen</button>
+        <button class="warn-btn" id="permAllowAlways" title="Für diese Session (oder dauerhaft, wenn oben angehakt) automatisch erlauben" data-i18n-title="html.fuerDieseSessionOder" data-i18n="html.immerErlauben">Immer erlauben</button>
+        <button class="primary-btn" id="permAllow" data-i18n="common.erlauben">Erlauben</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Add MCP server modal -->
+  <div class="modal-overlay hidden" id="mcpOverlay" role="dialog" aria-modal="true" aria-label="MCP-Server hinzufügen" data-i18n-aria="html.mcpServerHinzufuegen">
+    <div class="modal mcp-modal">
+      <div class="modal-head"><span class="perm-icon" data-ic="bolt" data-ic-size="20"></span><h3 data-i18n="html.mcpServerHinzufuegen">MCP-Server hinzufügen</h3></div>
+      <div class="mcp-form">
+        <label><span data-i18n="html.name">Name</span><input id="ma-name" placeholder="my-server" spellcheck="false" /></label>
+        <label><span data-i18n="html.transport">Transport</span>
+          <select id="ma-transport"><option value="stdio" data-i18n="html.stdioLokalerBefehl">stdio · lokaler Befehl</option><option value="http" data-i18n="html.http">http</option><option value="sse" data-i18n="html.sse">sse</option></select>
+        </label>
+        <div id="ma-stdio">
+          <label><span data-i18n="html.befehl">Befehl</span><input id="ma-command" placeholder="npx" spellcheck="false" /></label>
+          <label><span data-i18n="html.argumente">Argumente</span> <span class="muted" data-i18n="html.leerzeichenGetrennt">leerzeichen-getrennt</span><input id="ma-args" placeholder="-y @modelcontextprotocol/server-filesystem C:\path" spellcheck="false" /></label>
+          <label><span data-i18n="html.envVariablen">Env-Variablen</span> <span class="muted" data-i18n="html.keyWertProZeile">KEY=Wert pro Zeile</span><textarea id="ma-env" rows="2" spellcheck="false"></textarea></label>
+        </div>
+        <div id="ma-http" class="hidden">
+          <label><span data-i18n="html.url">URL</span><input id="ma-url" placeholder="https://mcp.example.com/mcp" spellcheck="false" /></label>
+          <label><span data-i18n="html.headers">Headers</span> <span class="muted" data-i18n="html.nameWertProZeile">Name: Wert pro Zeile</span><textarea id="ma-headers" rows="2" spellcheck="false"></textarea></label>
+        </div>
+        <label><span data-i18n="html.scope">Scope</span>
+          <select id="ma-scope"><option value="user" data-i18n="html.userAlleProjekte">user · alle Projekte</option><option value="local" data-i18n="html.localDiesesVerzeichnis">local · dieses Verzeichnis</option><option value="project" data-i18n="html.projectMcpJson">project · .mcp.json</option></select>
+        </label>
+      </div>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="ma-cancel" data-i18n="html.abbrechen">Abbrechen</button>
+        <button class="primary-btn" id="ma-submit" data-i18n="html.serverHinzufuegen-2">Server hinzufügen</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Config-file edit modal (subagents / output styles) -->
+  <div class="modal-overlay hidden" id="cfgOverlay" role="dialog" aria-modal="true" aria-label="Datei bearbeiten" data-i18n-aria="html.dateiBearbeiten">
+    <div class="modal cfg-modal">
+      <div class="modal-head"><span class="perm-icon" data-ic="edit" data-ic-size="20"></span><h3 id="cfgTitle" data-i18n="common.bearbeiten">Bearbeiten</h3></div>
+      <textarea id="cfgEditor" class="json-editor" spellcheck="false"></textarea>
+      <div class="modal-actions">
+        <button class="ghost-btn" id="cfgDelete" style="margin-right:auto;" data-i18n="common.loeschen-2">Löschen</button>
+        <button class="ghost-btn" id="cfgCancel" data-i18n="html.abbrechen">Abbrechen</button>
+        <button class="primary-btn" id="cfgSave" data-i18n="common.speichern">Speichern</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="cmdk-overlay hidden" id="cmdkOverlay" role="dialog" aria-modal="true" aria-label="Befehlspalette" data-i18n-aria="html.befehlspalette">
+    <div class="cmdk">
+      <input id="cmdkInput" type="text" placeholder="Springe zu… · Vorlage · Befehl · Session   (Enter, ↑↓, Esc)" data-i18n-ph="html.springeZuVorlageBefehl" spellcheck="false" autocomplete="off" />
+      <div class="cmdk-list" id="cmdkList"></div>
+    </div>
+  </div>
+
+  <div class="toast-wrap" id="toasts" role="status" aria-live="polite"></div>
+  <script src="/js/api-token.js"></script><!-- N9: adopts ?t=<token>, strips it from the URL, wraps fetch + EventSource — FIRST, before anything can call /api/ -->
+  <script src="/js/i18n.js"></script><!-- central keyed i18n dictionary (#21): load before render.js -->
+  <script src="/js/ui-result.js"></script><!-- shared ui-result channel (also require'd by lib/engine.js) -->
+  <script src="/js/ui-skill-prompt.js"></script><!-- shared UI-skill prompt composition (also require'd by lib/engine.js) — pure, no DOM -->
+  <script src="/js/csv.js"></script><!-- SEC-7: shared CSV cell encoder (also require'd by lib/usage.js) — pure, no DOM -->
+  <script src="/js/voice-insert.js"></script><!-- voice input: which recognised text goes where (final at the caret, interim beside it) — pure, no DOM -->
+  <script src="/js/open-points.js"></script><!-- shared offene-punkte channel (D2) — pure, no DOM -->
+  <script src="/js/plan-progress.js"></script><!-- PF-1: plan progress (plan-status/plan-schritte blocks, the resume fold — also require'd by lib/sessions.js) — pure, no DOM -->
+  <script src="/js/projects-core.js"></script><!-- P-1: projects — normalise/validate/warnings/start values (also require'd by lib/projects.js) — pure, no DOM -->
+  <script src="/js/ctx.js"></script><!-- shared context-window arithmetic — pure, no DOM -->
+  <script src="/js/ctx-breakdown.js"></script><!-- context breakdown per category/MCP server (also require'd by lib/chat.js) — pure, no DOM -->
+  <script src="/js/hooks-catalog.js"></script><!-- hook event catalog from get_hooks_listing (also require'd by lib/chat.js) — pure, no DOM -->
+  <script src="/js/settings-catalog.js"></script><!-- which state an options-catalog switch is in, incl. a value that is not a boolean — pure, no DOM -->
+  <script src="/js/agent-lanes.js"></script><!-- sub-agent lane lifecycle/metrics (#32/#33) — pure, no DOM -->
+  <script src="/js/task-stop.js"></script><!-- G6: stopping ONE task (stop_task) — pure, no DOM; before chat-render.js -->
+  <script src="/js/workflow-lanes.js"></script><!-- U1: a workflow run as its own rail group (task_progress.workflow_progress) — pure, no DOM; before chat-render.js -->
+  <script src="/js/tool-brief.js"></script><!-- U1: compact cards for Workflow/ReportFindings/Cron*/Skill/ToolSearch/Worktree — pure, no DOM; before chat-render.js -->
+  <script src="/js/task-list.js"></script><!-- U1: the task strip's feed (TaskCreate/TaskUpdate + TodoWrite) — pure, no DOM; before chat-render.js + chat-status.js -->
+  <script src="/js/mcp-live.js"></script><!-- G4: live MCP state + switches per tab (mcp_status/_toggle/_reconnect) — pure, no DOM; before chat.js -->
+  <script src="/js/tool-store.js"></script><!-- tool-input truncation + hidden-tool store (also require'd by lib/sessions.js) — pure, no DOM -->
+  <script src="/js/limits.js"></script><!-- rate_limit_event arithmetic — pure, no DOM -->
+  <script src="/js/turn-end.js"></script><!-- G2: the end reason of a turn out of the result frame (also require'd by lib/sessions.js) — pure, no DOM -->
+  <script src="/js/session-state.js"></script><!-- G5: session_state_changed + commands_changed — pure, no DOM (before chat-status.js + chat-events.js, which read it) -->
+  <script src="/js/queue-merge.js"></script><!-- „Alles zusammenfassen" für die Warteschlange — pure, no DOM -->
+  <script src="/js/tab-windows.js"></script><!-- CHAT-FLOW-4 Teil B: welche Tabs zu welchem Fenster gehören (cc_tabs je Fenster, Web Locks) — pure, no DOM; before chat.js -->
+  <script src="/js/backups-view.js"></script><!-- Backup-Gruppierung + Restore-Verdikt (also require'd by lib/backups.js) — pure, no DOM -->
+  <script src="/js/overlays.js"></script><!-- PR-9a: overlay STACK + focus trap + the one Esc owner — before render.js and every dialog that registers -->
+  <script src="/js/contrast.js"></script><!-- H7: WCAG-Kontrastrechnung + abgeleitete Akzentfarben (applyAccent) — pure, no DOM -->
+  <script src="/js/palette.js"></script><!-- H5: Strg+K-Treffer (Diakritika-Faltung, Datennamen unübersetzt) — pure, no DOM -->
+  <script src="/js/render.js"></script>
+  <script src="/js/dialogs.js"></script><!-- C3: every modal dialog in one file (was scattered over views-uiskills/-mcp/-system) -->
+  <script src="/js/chat.js"></script><!-- chat core: tt alias + tab state/lifecycle -->
+  <script src="/js/chat-render.js"></script>
+  <script src="/js/agent-detail.js"></script><!-- #34: one subagent in full, in the sidecar (uses laneMetrics + agentIcon) -->
+  <script src="/js/chat-status.js"></script>
+  <script src="/js/chat-events.js"></script>
+  <script src="/js/chat-composer.js"></script>
+  <script src="/js/chat-side.js"></script><!-- side rails: approvals + file explorer (before chat-perms.js, which bootstraps the first tab) -->
+  <script src="/js/chat-perms.js"></script>
+  <script src="/js/sessions.js"></script>
+  <script src="/js/projects.js"></script><!-- P-1: the Projekte view, its editor dialog, „Neuer Chat im Projekt" (after sessions.js: it resumes through resumeSession) -->
+  <script src="/js/views.js"></script><!-- views core: settings + info -->
+  <script src="/js/views-mcp.js"></script>
+  <script src="/js/views-usage.js"></script>
+  <script src="/js/views-skills.js"></script>
+  <script src="/js/views-uiskills.js"></script>
+  <script src="/js/views-memory.js"></script>
+  <script src="/js/views-system.js"></script>
+  <script src="/js/views-bug.js"></script>
+  <script src="/js/commands.js"></script>
+  <script src="/js/boot.js"></script>
+</body>
+</html>

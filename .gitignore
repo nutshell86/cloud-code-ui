@@ -1,0 +1,41 @@
+# Runtime state (per-machine, created by the app)
+favorites.json
+session-names.json
+session-mcp.json
+ui-skill-runs.json
+ui-skill-schedules.json
+skill-favorites.json
+prompts.json
+prompt-history.json
+spend-cache.json
+bedrock-models.json
+corrections.json
+projects.json
+session-projects.json
+# The folded transcript corpus (lib/corpus.js). It normally lives under %LOCALAPPDATA%\claude-code-ui
+# precisely so it stays OUT of this checkout — but CLAUDE_UI_DATA_DIR can point here, and an untracked
+# file in the checkout makes `git status --porcelain` dirty, which makes POST /api/version/pull answer
+# 409 `dirty-main`: the panel would permanently block its own Update button.
+transcript-cache.json
+# The API token (N9) lives under %LOCALAPPDATA%\claude-code-ui for the same reason as the line above AND a
+# second one: it is a SECRET, and `DATA_DIR === ROOT` in production means the checkout. This rule is the
+# belt for the CLAUDE_UI_DATA_DIR case — a token that reaches a commit is a token that has to be rotated.
+api-token
+# core.js writeJsonAtomic writes `<file>.<pid>.<ms>.tmp` next to its target, so without this rule every
+# atomic write of a store in this directory would flap that same dirty flag.
+*.tmp
+
+# Dependencies (none today — pure Node — but future-proof)
+node_modules/
+
+# Logs / OS cruft
+*.log
+Thumbs.db
+.DS_Store
+ui-prefs.json
+
+# the throwaway test runner (wraps makeSandbox) — scratch, never committed
+.tmp-run-tests.js
+# …and the throwaway mutation harnesses. Untracked in the checkout they make `git status --porcelain` dirty,
+# and POST /api/version/pull then answers 409 `dirty-main`; tracked, they would ship to main.
+.tmp-mutate*.js

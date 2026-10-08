@@ -1,0 +1,175 @@
+{
+  "method": "The eventCatalog of the real get_hooks_listing answer, 2026-10-03, free (control request only, 20 ms — the fastest control of that run). Raw recording: C:/Users/you/ccui-ctxprobe/ctx-probe-result.json, key hooks_listing.data.eventCatalog, copied VERBATIM in the delivered (lifecycle) order. Counter-check in the binary: the identical 33-name list stands twice as an array literal (kg @204512305, P0 @205427002) with the same order and the same names.",
+  "cliVersion": "2.1.288",
+  "measuredAt": "2026-10-03",
+  "eventCount": 33,
+  "matcherCount": 23,
+  "caveat": "Counts are to be COUNTED off eventCatalog, never quoted from prose. The first draft of PR-11 wrote \"22 of the 33\" and \"five of the nine on offer\" in four places; measured it is 23 of 33 (ten take none), and SEVEN of the nine the editor used to offer take a matcher - five of those seven being the ones the old hint denied. That is why this file exists instead of a number in a comment.",
+  "eventCatalog": [
+    {
+      "name": "PreToolUse",
+      "summary": "Before tool execution",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PostToolUse",
+      "summary": "After tool execution",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PostToolUseFailure",
+      "summary": "After tool execution fails",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PostToolBatch",
+      "summary": "After a batch of tool calls resolves",
+      "supportsMatcher": false
+    },
+    {
+      "name": "PermissionDenied",
+      "summary": "After auto mode classifier denies a tool call",
+      "supportsMatcher": true
+    },
+    {
+      "name": "Notification",
+      "summary": "When notifications are sent",
+      "supportsMatcher": true
+    },
+    {
+      "name": "UserPromptSubmit",
+      "summary": "When the user submits a prompt",
+      "supportsMatcher": false
+    },
+    {
+      "name": "UserPromptExpansion",
+      "summary": "When a user-typed slash command expands into a prompt",
+      "supportsMatcher": true
+    },
+    {
+      "name": "SessionStart",
+      "summary": "When a new session is started",
+      "supportsMatcher": true
+    },
+    {
+      "name": "Stop",
+      "summary": "Right before Claude concludes its response",
+      "supportsMatcher": false
+    },
+    {
+      "name": "StopFailure",
+      "summary": "When the turn ends due to an API error",
+      "supportsMatcher": true
+    },
+    {
+      "name": "SubagentStart",
+      "summary": "When a subagent (Agent tool call) is started",
+      "supportsMatcher": true
+    },
+    {
+      "name": "SubagentStop",
+      "summary": "Right before a subagent (Agent tool call) concludes its response",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PreCompact",
+      "summary": "Before conversation compaction",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PostCompact",
+      "summary": "After conversation compaction",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PreModelSwitch",
+      "summary": "Before a requested model switch (/model, model picker, set_model)",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PostModelSwitch",
+      "summary": "After the session model changes (any cause)",
+      "supportsMatcher": true
+    },
+    {
+      "name": "SessionEnd",
+      "summary": "When a session is ending",
+      "supportsMatcher": true
+    },
+    {
+      "name": "PermissionRequest",
+      "summary": "When a permission dialog is displayed",
+      "supportsMatcher": true
+    },
+    {
+      "name": "Setup",
+      "summary": "Repo setup hooks for init and maintenance",
+      "supportsMatcher": true
+    },
+    {
+      "name": "TeammateIdle",
+      "summary": "When a teammate is about to go idle",
+      "supportsMatcher": false
+    },
+    {
+      "name": "TaskCreated",
+      "summary": "When a task is being created",
+      "supportsMatcher": false
+    },
+    {
+      "name": "TaskCompleted",
+      "summary": "When a task is being marked as completed",
+      "supportsMatcher": false
+    },
+    {
+      "name": "Elicitation",
+      "summary": "When an MCP server requests user input (elicitation)",
+      "supportsMatcher": true
+    },
+    {
+      "name": "ElicitationResult",
+      "summary": "After a user responds to an MCP elicitation",
+      "supportsMatcher": true
+    },
+    {
+      "name": "ConfigChange",
+      "summary": "When configuration files change during a session",
+      "supportsMatcher": true
+    },
+    {
+      "name": "InstructionsLoaded",
+      "summary": "When an instruction file (CLAUDE.md or rule) is loaded",
+      "supportsMatcher": true
+    },
+    {
+      "name": "WorktreeCreate",
+      "summary": "Create an isolated worktree for VCS-agnostic isolation",
+      "supportsMatcher": false
+    },
+    {
+      "name": "WorktreeRemove",
+      "summary": "Remove a previously created worktree",
+      "supportsMatcher": false
+    },
+    {
+      "name": "CwdChanged",
+      "summary": "After the working directory changes",
+      "supportsMatcher": false
+    },
+    {
+      "name": "FileChanged",
+      "summary": "When a watched file changes",
+      "supportsMatcher": true
+    },
+    {
+      "name": "DirectoryAdded",
+      "summary": "After a working directory is added mid-session",
+      "supportsMatcher": true
+    },
+    {
+      "name": "MessageDisplay",
+      "summary": "While assistant message text is displayed",
+      "supportsMatcher": false
+    }
+  ]
+}
